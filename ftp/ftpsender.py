@@ -23,6 +23,7 @@ class Sender:
         self.congestion = congestion_control
         self.receive_ack = SR() if retransmission == "SR" else GBN
 
+        self.send_times = {}
         self.timeout = TIMEOUT
         self.base = 0
         self.next_seq_num = 0

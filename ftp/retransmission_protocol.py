@@ -13,10 +13,10 @@ def GBN(sender):
                         sender.timers[seq].cancel()
                         del sender.timers[seq]
                 sender.base = ack_num + 1
-                sender.congestion_control.on_ack_received(ack_num, rtt)
+                sender.congestion.on_ack_received(ack_num, rtt)
                 # 继续发送下一个分组
                 while (
-                    sender.next_seq_num < sender.base + sender.congestion_control.get_window_size()
+                    sender.next_seq_num < sender.base + sender.congestion.get_window_size()
                     and sender.next_seq_num < sender.total_packets
                 ):
                     sender.send_segment(sender.next_seq_num)
@@ -37,7 +37,7 @@ def SR():
                     sender.timers[ack_num].cancel()
                     del sender.timers[ack_num]
                     ack_received[ack_num] = True
-                    sender.congestion_control.on_ack_received(ack_num, rtt)
+                    sender.congestion.on_ack_received(ack_num, rtt)
                     while sender.base in ack_received:
                         del ack_received[sender.base]
                         sender.base += 1

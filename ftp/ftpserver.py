@@ -1,7 +1,7 @@
 import socket
 import threading
 from ftpsender import Sender
-from ftpreceiver import receive
+from util import upload, download
 
 
 def handle_client(addr, operation, protocol, server_socket):
@@ -15,15 +15,11 @@ def handle_client(addr, operation, protocol, server_socket):
     # 在新的 socket 上接收文件名
     filename, _ = client_socket.recvfrom(1024)
     if operation == "download":
-        with open(filename.decode(), "rb") as f:
-            data = f.read()
-            print(f"成功读取文件，文件大小：{len(data)} 字节")
-        sender = Sender(client_socket, addr, retransmission=protocol)
-        sender.start(data)
+        upload(filename.decode(), client_socket, addr, protocol)
+
     elif operation == "upload":
-        data = receive(client_socket, protocol)
-        with open("serverdown_" + filename.decode(), "wb") as f:
-            f.write(data)
+        download(filename.decode(), client_socket, protocol, prefix="serverdown_")
+
 
     client_socket.close()
 

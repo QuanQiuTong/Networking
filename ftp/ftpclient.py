@@ -1,6 +1,5 @@
 import socket
-from ftpreceiver import receive
-from ftpsender import Sender
+from util import upload, download
 
 
 def main():
@@ -25,15 +24,9 @@ def main():
     client_socket.sendto(filename.encode(), server_address)
 
     if operation == "upload":
-        sender = Sender(client_socket, server_address, retransmission=protocol)
-        with open(filename, "rb") as f:
-            data = f.read()
-            print(f"成功读取文件，文件大小：{len(data)} 字节")
-            sender.start(data)
+        upload(filename, client_socket, server_address, protocol)
     elif operation == "download":
-        data = receive(client_socket, protocol)
-        with open("download_" + filename, "wb") as f:
-            f.write(data)
+        download(filename, client_socket, protocol)
 
     client_socket.close()
 

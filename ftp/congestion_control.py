@@ -3,8 +3,9 @@ WINDOW_SIZE = 4
 TIMEOUT = 2
 PACKET_SIZE = 1024
 
+
 class CongestionControl:
-    def on_ack_received(self, ack_num):
+    def on_ack_received(self, ack_num, rtt):
         raise NotImplementedError
 
     def on_timeout(self, seq_num):
@@ -12,14 +13,15 @@ class CongestionControl:
 
     def get_window_size(self):
         raise NotImplementedError
-    
+
+
 class RenoCongestionControl(CongestionControl):
     def __init__(self):
         self.window_size = 1
         self.ssthresh = 64
         self.duplicate_acks = 0
 
-    def on_ack_received(self, ack_num):
+    def on_ack_received(self, ack_num, rtt):
         if self.window_size < self.ssthresh:
             self.window_size += 1  # 慢启动阶段
         else:
@@ -34,11 +36,12 @@ class RenoCongestionControl(CongestionControl):
     def get_window_size(self):
         return self.window_size
 
+
 class VegasCongestionControl(CongestionControl):
     def __init__(self):
         self.window_size = 1
         self.ssthresh = 64
-        self.base_rtt = float('inf')
+        self.base_rtt = float("inf")
         self.alpha = 1
         self.beta = 3
         self.duplicate_acks = 0
