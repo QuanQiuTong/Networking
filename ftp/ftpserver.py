@@ -3,11 +3,13 @@ import threading
 from ftpsender import Sender
 from util import upload, download
 
+IP = "172.17.40.155"
+PORT = 25565
 
 def handle_client(addr, operation, protocol, server_socket):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     # 绑定到随机可用端口
-    client_socket.bind(("localhost", 0))
+    client_socket.bind((IP, 0))
     # 将新的端口号告知客户端
     port_info = str(client_socket.getsockname()[1]).encode()
     server_socket.sendto(port_info, addr)
@@ -20,14 +22,14 @@ def handle_client(addr, operation, protocol, server_socket):
     elif operation == "upload":
         download(filename.decode(), client_socket, protocol, prefix="serverdown_")
 
-
     client_socket.close()
 
 
 def main():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    server_socket.bind(("localhost", 12345))
-    print("服务器已启动，等待客户端连接...")
+    server_socket.bind((IP, PORT))  # 绑定到随机可用端口
+    port = server_socket.getsockname()[1]  # 获取绑定的端口号
+    print(f"服务器已启动，绑定端口号：{port}")
 
     while True:
         operation, addr = server_socket.recvfrom(1024)

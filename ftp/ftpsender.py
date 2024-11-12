@@ -11,12 +11,12 @@ PACKET_SIZE = 1024
 class Sender:
     def __init__(
         self,
-        server_socket,
+        socket,
         addr,
         congestion_control=RenoCongestionControl(),
         retransmission="SR",
     ):
-        self.socket = server_socket
+        self.socket = socket
         self.addr = addr
         self.data = b""  # 待发送的数据
 

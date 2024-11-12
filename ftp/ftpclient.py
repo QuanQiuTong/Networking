@@ -1,10 +1,13 @@
 import socket
 from util import upload, download
 
+IP = "47.254.120.45"
+PORT = 44382
+
 
 def main():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    server_address = ("localhost", 12345)
+    server_address = (IP, PORT)
 
     # 选择操作类型
     operation = input("请选择操作类型（download/upload）：").strip()
@@ -17,7 +20,7 @@ def main():
     # 接收服务器发送的新端口号
     port_info, _ = client_socket.recvfrom(1024)
     new_port = int(port_info.decode())
-    server_address = ("localhost", new_port)
+    server_address = (IP, new_port)
 
     # 请求文件
     filename = "test"  # input('请输入要下载的文件名：')
