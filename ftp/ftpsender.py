@@ -7,13 +7,89 @@ WINDOW_SIZE = 4
 TIMEOUT = 2
 PACKET_SIZE = 1024
 
+class CongestionControl:
+    def on_ack_received(self, ack_num):
+        raise NotImplementedError
 
+    def on_timeout(self, seq_num):
+        raise NotImplementedError
+
+    def get_window_size(self):
+        raise NotImplementedError
+    
+class RenoCongestionControl(CongestionControl):
+    def __init__(self):
+        self.window_size = 1
+        self.ssthresh = 64
+        self.duplicate_acks = 0
+
+    def on_ack_received(self, ack_num):
+        if self.window_size < self.ssthresh:
+            self.window_size += 1  # 慢启动阶段
+        else:
+            self.window_size += 1 / self.window_size  # 拥塞避免阶段
+        self.duplicate_acks = 0
+
+    def on_timeout(self, seq_num):
+        self.ssthresh = max(self.window_size // 2, 1)
+        self.window_size = 1
+        self.duplicate_acks = 0
+
+    def get_window_size(self):
+        return self.window_size
+
+def GBN(sender):
+    while sender.base < sender.total_packets:
+        ack_packet, _ = sender.socket.recvfrom(1024)
+        ack_num = int.from_bytes(ack_packet, byteorder="big")
+        print(f"收到ACK：{ack_num}")
+        with sender.lock:
+            if ack_num >= sender.base:
+                for seq in range(sender.base, ack_num + 1):
+                    if seq in sender.timers:
+                        sender.timers[seq].cancel()
+                        del sender.timers[seq]
+                sender.base = ack_num + 1
+                sender.congestion_control.on_ack_received(ack_num)
+                # 继续发送下一个分组
+                while (
+                    sender.next_seq_num < sender.base + sender.congestion_control.get_window_size()
+                    and sender.next_seq_num < sender.total_packets
+                ):
+                    sender.send_segment(sender.next_seq_num)
+                    sender.next_seq_num += 1
+
+
+# Closure
+def SR():
+    ack_received = {}
+
+    def sr_receive_ack(sender):
+        while sender.base < sender.total_packets:
+            ack_packet, _ = sender.socket.recvfrom(1024)
+            ack_num = int.from_bytes(ack_packet, byteorder="big")
+            print(f"收到ACK：{ack_num}")
+            with sender.lock:
+                if ack_num in sender.timers:
+                    sender.timers[ack_num].cancel()
+                    del sender.timers[ack_num]
+                    ack_received[ack_num] = True
+                    sender.congestion_control.on_ack_received(ack_num)
+                    while sender.base in ack_received:
+                        del ack_received[sender.base]
+                        sender.base += 1
+
+    return sr_receive_ack
 class Sender:
-    def __init__(self, server_socket, addr):
+    def __init__(self, server_socket, addr, congestion_control = RenoCongestionControl(), retransmission = "SR"):
+        self.receive_ack = SR() if retransmission == "SR" else GBN
+
         self.socket = server_socket
         self.addr = addr
-        self.data = b""
-        self.window_size = WINDOW_SIZE
+        self.data = b"" # 待发送的数据
+
+        self.congestion_control = congestion_control
+
         self.timeout = TIMEOUT
         self.base = 0
         self.next_seq_num = 0
@@ -37,6 +113,7 @@ class Sender:
     def timeout_handler(self, seq_num):
         with self.lock:
             print(f"超时重传分组：{seq_num}")
+            self.congestion_control.on_timeout(seq_num)
             self.send_segment(seq_num)
 
     def start(self, data):
@@ -45,7 +122,7 @@ class Sender:
         print(f"总分组数：{self.total_packets}")
 
         send_thread = threading.Thread(target=self.send_data)
-        ack_thread = threading.Thread(target=self.receive_ack)
+        ack_thread = threading.Thread(target=self.receive_ack, args=(self,))
         send_thread.start()
         ack_thread.start()
         send_thread.join()
@@ -53,74 +130,13 @@ class Sender:
         print("文件发送完成")
 
     def send_data(self):
-        raise NotImplementedError
-
-    def receive_ack(self):
-        raise NotImplementedError
-
-
-class GBNSender(Sender):
-    def __init__(self, server_socket, addr):
-        super().__init__(server_socket, addr)
-
-    def send_data(self):
         while self.base < self.total_packets:
             with self.lock:
                 while (
-                    self.next_seq_num < self.base + self.window_size
+                    self.next_seq_num < self.base + self.congestion_control.get_window_size()
                     and self.next_seq_num < self.total_packets
                 ):
                     self.send_segment(self.next_seq_num)
                     self.next_seq_num += 1
             time.sleep(0.1)
 
-    def receive_ack(self):
-        while self.base < self.total_packets:
-            ack_packet, _ = self.socket.recvfrom(1024)
-            ack_num = int.from_bytes(ack_packet, byteorder="big")
-            print(f"收到ACK：{ack_num}")
-            with self.lock:
-                if ack_num >= self.base:
-                    for seq in range(self.base, ack_num + 1):
-                        if seq in self.timers:
-                            self.timers[seq].cancel()
-                            del self.timers[seq]
-                    self.base = ack_num + 1
-                    # 继续发送下一个分组
-                    while (
-                        self.next_seq_num < self.base + self.window_size
-                        and self.next_seq_num < self.total_packets
-                    ):
-                        self.send_segment(self.next_seq_num)
-                        self.next_seq_num += 1
-
-
-class SRSender(Sender):
-    def __init__(self, server_socket, addr):
-        super().__init__(server_socket, addr)
-        self.ack_received = {}
-
-    def send_data(self):
-        while self.base < self.total_packets:
-            with self.lock:
-                while (
-                    self.next_seq_num < self.base + self.window_size
-                    and self.next_seq_num < self.total_packets
-                ):
-                    self.send_segment(self.next_seq_num)
-                    self.next_seq_num += 1
-            time.sleep(0.1)
-
-    def receive_ack(self):
-        while self.base < self.total_packets:
-            ack_packet, _ = self.socket.recvfrom(1024)
-            ack_num = int.from_bytes(ack_packet, byteorder="big")
-            print(f"收到ACK：{ack_num}")
-            with self.lock:
-                if ack_num in self.timers:
-                    self.timers[ack_num].cancel()
-                    del self.timers[ack_num]
-                    self.ack_received[ack_num] = True
-                    while self.base in self.ack_received:
-                        del self.ack_received[self.base]
-                        self.base += 1

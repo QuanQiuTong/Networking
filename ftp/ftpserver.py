@@ -1,6 +1,6 @@
 import socket
 import threading
-from ftpsender import GBNSender, SRSender
+from ftpsender import Sender
 from ftpreceiver import GBNReceiver, SRReceiver
 
 
@@ -15,11 +15,7 @@ def handle_client(addr, operation, protocol, server_socket):
     # 在新的 socket 上接收文件名
     filename, _ = client_socket.recvfrom(1024)
     if operation == "download":
-        sender = (
-            protocol == "GBN"
-            and GBNSender(client_socket, addr)
-            or SRSender(client_socket, addr)
-        )
+        sender = Sender(client_socket, addr, retransmission=protocol)
         with open(filename.decode(), "rb") as f:
             data = f.read()
             print(f"成功读取文件，文件大小：{len(data)} 字节")

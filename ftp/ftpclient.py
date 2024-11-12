@@ -1,6 +1,6 @@
 import socket
 from ftpreceiver import GBNReceiver, SRReceiver
-from ftpsender import GBNSender, SRSender
+from ftpsender import Sender
 
 
 def main():
@@ -25,11 +25,7 @@ def main():
     client_socket.sendto(filename.encode(), server_address)
 
     if operation == "upload":
-        sender = (
-            protocol == "GBN"
-            and GBNSender(client_socket, server_address)
-            or SRSender(client_socket, server_address)
-        )
+        sender = Sender(client_socket, server_address, retransmission=protocol)
         with open(filename, "rb") as f:
             data = f.read()
             print(f"成功读取文件，文件大小：{len(data)} 字节")
