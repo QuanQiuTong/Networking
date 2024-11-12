@@ -1,0 +1,65 @@
+This is a sample file for testing the FTP server.
+You can use this file to upload and download from the FTP server.
+Make sure to check the file integrity after each operation.
+
+Happy testing!
+
+
+##
+ A### Section 1: Basic Information
+dd- **Name:** Test User
+it- **Date:** 2023-10-01
+io- **Purpose:** Validate FTP server functionality
+na
+l ### Section 2: File Details
+Te- **File Name:** testfile.txt
+st- **File Size:** 1 MB
+ D- **File Type:** Text Document
+at
+a### 1. **Upload Test**
+Sec    - Upload `testfile.txt` to the FTP server.
+tio    - Verify the upload is successful.
+n 3    - Check the file size and integrity on the server.
+: T
+est2. **Download Test**
+ Sc    - Download `testfile.txt` from the FTP server.
+ena    - Verify the download is successful.
+rio    - Check the file size and integrity on the local machine.
+s
+
+
+3.        - Ensure the file is no longer accessible on the server.
+  - Ve
+rify t### Section 4: Additional Notes
+he del- Ensure the FTP server is running before starting the tests.
+etion - Use a reliable FTP client for uploading and downloading files.
+is suc- Report any discrepancies or issues encountered during testing.
+cessfu
+l.
+  ### - **Lorem Ipsum:** Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Sectio- **Repeated Data:** This is a repeated line for testing purposes. This is a repeated line for testing purposes. This is a repeated line for testing purposes. This is a repeated line for testing purposes. This is a repeated line for testing purposes. This is a repeated line for testing purposes. This is a repeated line for testing purposes. This is a repeated line for testing purposes. This is a repeated line for testing purposes. This is a repeated line for testing purposes.
+n 5: E
+xtende### Section 6: Conclusion
+d Data- Ensure all tests are completed and documented.
+
+- De- - Provide recommendations for improvements if necessary.
+Summar
+ize thHappy testing!
+e results and any issues found.
+lete `testfile.txt` from the FTP server.
+ **Delete Test**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

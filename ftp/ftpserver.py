@@ -1,9 +1,10 @@
 import socket
 import threading
-from ftpsender2 import GBNSender, SRSender
+from ftpsender import GBNSender, SRSender
+from ftpreceiver import GBNReceiver, SRReceiver
 
 
-def handle_client(addr, protocol, server_socket):
+def handle_client(addr, operation, protocol, server_socket):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     # 绑定到随机可用端口
     client_socket.bind(("localhost", 0))
@@ -13,16 +14,28 @@ def handle_client(addr, protocol, server_socket):
 
     # 在新的 socket 上接收文件名
     filename, _ = client_socket.recvfrom(1024)
-    with open(filename.decode(), "rb") as f:
-        data = f.read()
-        print(f"成功读取文件，文件大小：{len(data)} 字节")
-        if protocol == "GBN":
-            sender = GBNSender(client_socket, addr, data)
-            sender.start()
-        elif protocol == "SR":
-            sender = SRSender(client_socket, addr, data)
-            sender.start()
+    if operation == "download":
+        sender = (
+            protocol == "GBN"
+            and GBNSender(client_socket, addr)
+            or SRSender(client_socket, addr)
+        )
+        with open(filename.decode(), "rb") as f:
+            data = f.read()
+            print(f"成功读取文件，文件大小：{len(data)} 字节")
+            sender.start(data)
+    elif operation == "upload":
+        receiver = (
+            protocol == "GBN"
+            and GBNReceiver(client_socket)
+            or SRReceiver(client_socket)
+        )
+        receiver.start()
+        with open("serverdown_" + filename.decode(), "wb") as f:
+            f.write(receiver.file_data)
+
     client_socket.close()
+
 
 def main():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -30,9 +43,11 @@ def main():
     print("服务器已启动，等待客户端连接...")
 
     while True:
+        operation, addr = server_socket.recvfrom(1024)
         protocol, addr = server_socket.recvfrom(1024)
         threading.Thread(
-            target=handle_client, args=(addr, protocol.decode(), server_socket)
+            target=handle_client,
+            args=(addr, operation.decode(), protocol.decode(), server_socket),
         ).start()
 
 

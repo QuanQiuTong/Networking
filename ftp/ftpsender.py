@@ -8,18 +8,18 @@ TIMEOUT = 2
 PACKET_SIZE = 1024
 
 
-class GBNSender:
-    def __init__(self, server_socket, addr, data):
+class Sender:
+    def __init__(self, server_socket, addr):
         self.socket = server_socket
         self.addr = addr
-        self.data = data
+        self.data = b""
         self.window_size = WINDOW_SIZE
         self.timeout = TIMEOUT
         self.base = 0
         self.next_seq_num = 0
         self.lock = threading.Lock()
         self.timers = {}
-        self.total_packets = (len(data) + PACKET_SIZE - 1) // PACKET_SIZE
+        self.total_packets = 0
         print(f"总分组数：{self.total_packets}")
 
     def send_segment(self, seq_num):
@@ -35,16 +35,33 @@ class GBNSender:
             timer.start()
 
     def timeout_handler(self, seq_num):
-        print(f"超时重传分组：{seq_num}")
-        self.send_segment(seq_num)
+        with self.lock:
+            print(f"超时重传分组：{seq_num}")
+            self.send_segment(seq_num)
 
-    def start(self):
+    def start(self, data):
+        self.data = data
+        self.total_packets = (len(data) + PACKET_SIZE - 1) // PACKET_SIZE
+        print(f"总分组数：{self.total_packets}")
+
         send_thread = threading.Thread(target=self.send_data)
         ack_thread = threading.Thread(target=self.receive_ack)
         send_thread.start()
         ack_thread.start()
         send_thread.join()
         ack_thread.join()
+        print("文件发送完成")
+
+    def send_data(self):
+        raise NotImplementedError
+
+    def receive_ack(self):
+        raise NotImplementedError
+
+
+class GBNSender(Sender):
+    def __init__(self, server_socket, addr):
+        super().__init__(server_socket, addr)
 
     def send_data(self):
         while self.base < self.total_packets:
@@ -78,45 +95,10 @@ class GBNSender:
                         self.next_seq_num += 1
 
 
-class SRSender:
-    def __init__(self, server_socket, addr, data):
-        self.socket = server_socket
-        self.addr = addr
-        self.data = data
-        self.window_size = WINDOW_SIZE
-        self.timeout = TIMEOUT
-        self.base = 0
-        self.next_seq_num = 0
-        self.lock = threading.Lock()
-        self.timers = {}
+class SRSender(Sender):
+    def __init__(self, server_socket, addr):
+        super().__init__(server_socket, addr)
         self.ack_received = {}
-        self.total_packets = (len(data) + PACKET_SIZE - 1) // PACKET_SIZE
-        print(f"总分组数：{self.total_packets}")
-
-    def send_segment(self, seq_num):
-        start_idx = seq_num * PACKET_SIZE
-        end_idx = min((seq_num + 1) * PACKET_SIZE, len(self.data))
-        packet_data = self.data[start_idx:end_idx]
-        packet = seq_num.to_bytes(4, byteorder="big") + packet_data
-        self.socket.sendto(packet, self.addr)
-        print(f"发送分组：{seq_num}")
-        if seq_num not in self.timers:
-            timer = threading.Timer(self.timeout, self.timeout_handler, args=(seq_num,))
-            self.timers[seq_num] = timer
-            timer.start()
-
-    def timeout_handler(self, seq_num):
-        with self.lock:
-            print(f"超时重传分组：{seq_num}")
-            self.send_segment(seq_num)
-
-    def start(self):
-        send_thread = threading.Thread(target=self.send_data)
-        ack_thread = threading.Thread(target=self.receive_ack)
-        send_thread.start()
-        ack_thread.start()
-        send_thread.join()
-        ack_thread.join()
 
     def send_data(self):
         while self.base < self.total_packets:
