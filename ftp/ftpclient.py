@@ -1,5 +1,5 @@
 import socket
-from ftpreceiver import GBNReceiver, SRReceiver
+from ftpreceiver import receive
 from ftpsender import Sender
 
 
@@ -31,14 +31,9 @@ def main():
             print(f"成功读取文件，文件大小：{len(data)} 字节")
             sender.start(data)
     elif operation == "download":
-        receiver = (
-            protocol == "GBN"
-            and GBNReceiver(client_socket)
-            or SRReceiver(client_socket)
-        )
-        receiver.start()
+        data = receive(client_socket, protocol)
         with open("download_" + filename, "wb") as f:
-            f.write(receiver.file_data)
+            f.write(data)
 
     client_socket.close()
 

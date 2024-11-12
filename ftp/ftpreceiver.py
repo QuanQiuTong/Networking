@@ -74,3 +74,14 @@ class SRReceiver:
                     break
         except socket.timeout:
             print("接收超时")
+
+
+def receive(server_socket, protocol):
+    if protocol == "GBN":
+        receiver = GBNReceiver(server_socket)
+    elif protocol == "SR":
+        receiver = SRReceiver(server_socket)
+    else:
+        raise ValueError("Invalid protocol")
+    receiver.start()
+    return receiver.file_data
