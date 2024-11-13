@@ -8,21 +8,17 @@ WINDOW_SIZE = 4
 TIMEOUT = 2
 PACKET_SIZE = 1024
 
+log = print
+# log = lambda *args, **kwargs: None
 
 class Sender:
-    def __init__(
-        self,
-        socket,
-        addr,
-        retransmission="SR",
-        congestion_control = Reno(),
-    ):
+    def __init__(self, socket, addr, retransmission, congestion_control=Reno()):
         self.socket = socket
         self.addr = addr
         self.data = b""
 
         self.congestion = Reno() if congestion_control == "Reno" else Vegas()
-        self.receive_ack = SR() if retransmission == "SR" else GBN
+        self.receive_ack = GBN if retransmission == "GBN" else SR()
 
         self.send_times = {}  # 用于记录发送时间
         self.timeout = TIMEOUT
@@ -33,36 +29,33 @@ class Sender:
         self.total_packets = 0
         self.stop_event = threading.Event()
 
-        self.socket.settimeout(3)  # 设置超时时间为3秒
+        self.socket.settimeout(6)  # 设置超时时间为6秒
 
-    def send_segment(self, seq_num, fin=False):
-        chk = seq_num == self.total_packets - 1
-        start_idx = seq_num * PACKET_SIZE
-        end_idx = min((seq_num + 1) * PACKET_SIZE, len(self.data))
+    def send_segment(self, seq: int, fin=False):
+        chk = seq == self.total_packets - 1
+        start_idx = seq * PACKET_SIZE
+        end_idx = min((seq + 1) * PACKET_SIZE, len(self.data))
         if not chk:
             packet_data = self.data[start_idx:end_idx]
         else:
             packet_data = self.md5_data
 
         flags = (fin << 1) | chk
-        flags_byte = flags.to_bytes(1, byteorder="big")
 
-        packet = seq_num.to_bytes(4, byteorder="big") + flags_byte + packet_data
+        packet = seq.to_bytes(4, "big") + flags.to_bytes(1, "big") + packet_data
         self.socket.sendto(packet, self.addr)
-        self.send_times[seq_num] = time.perf_counter()  # 记录发送时间
-        print(
-            f"发送分组：{seq_num}, FIN: {fin}, CHECK: {chk}, len: {len(packet)}, start: {start_idx}, end: {end_idx}"
-        )
-        if seq_num not in self.timers and not fin:
-            timer = threading.Timer(self.timeout, self.timeout_handler, args=(seq_num,))
-            self.timers[seq_num] = timer
+        self.send_times[seq] = time.perf_counter()  # 记录发送时间
+        log(f"发送分组：{seq}, FIN: {fin}, CHECK: {chk}, len: {len(packet)}, start: {start_idx}, end: {end_idx}")
+        if seq not in self.timers and not fin:
+            timer = threading.Timer(self.timeout, self.timeout_handler, args=(seq,))
+            self.timers[seq] = timer
             timer.start()
 
-    def timeout_handler(self, seq_num):
+    def timeout_handler(self, seq):
         with self.lock:
-            print(f"超时重传分组：{seq_num}")
-            self.congestion.on_timeout(seq_num)
-            self.send_segment(seq_num)
+            log(f"超时重传分组：{seq}")
+            self.congestion.on_timeout(seq)
+            self.send_segment(seq)
 
     def start(self, data):
         self.data = data
@@ -78,11 +71,19 @@ class Sender:
 
         send_thread = threading.Thread(target=self.send_data)
         ack_thread = threading.Thread(target=self.receive_ack, args=(self,))
+
+        start_time = time.perf_counter()
         send_thread.start()
         ack_thread.start()
         send_thread.join()
         ack_thread.join()
+        end_time = time.perf_counter()
         print("文件发送完成")
+
+        throughput = len(data) / (end_time - start_time)
+        print(f"有效吞吐量：{throughput:.2f} Byte/s")
+        utilisation = len(data) / (WINDOW_SIZE * PACKET_SIZE)
+        print(f"流量利用率：{utilisation:.2f}")
 
         # 发送结束信号
         self.send_segment(self.total_packets, fin=True)

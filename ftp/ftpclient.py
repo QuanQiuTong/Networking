@@ -1,10 +1,8 @@
 import socket
-import threading
-import time
 from util import upload, download
 
-# IP = "192.168.120.129"
-IP = "localhost"
+# IP = "192.168.3.17"
+IP = "192.168.120.129"
 PORT = 25565
 TIMEOUT = 2  # 超时时间
 MAX_RETRIES = 5  # 最大重试次数
@@ -14,7 +12,7 @@ def receive_port(client_socket):
     client_socket.settimeout(TIMEOUT)
     while True:
         try:
-            port_info, _ = client_socket.recvfrom(1024)
+            port_info, _ = client_socket.recvfrom(1024 * 4)
             new_port = int(port_info.decode())
             return new_port
         except socket.timeout:

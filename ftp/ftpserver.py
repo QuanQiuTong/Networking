@@ -2,8 +2,8 @@ import socket
 import threading
 from util import upload, download
 
-IP = "localhost"
-PORT = 25565
+IP = "192.168.3.17"
+PORT = 21
 
 def handle_client(addr, operation, filename, protocol, congestion, server_socket):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

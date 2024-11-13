@@ -1,10 +1,13 @@
 import time
 
+PACKET_SIZE = 1024
+
+
 def GBN(sender):
     while sender.base < sender.total_packets:
-        ack_packet, _ = sender.socket.recvfrom(1024)
+        ack_packet, _ = sender.socket.recvfrom(1024 + 5)
         ack_num = int.from_bytes(ack_packet, byteorder="big")
-        rtt = time.perf_counter() - sender.send_times[ack_num]  # 计算RTT
+        rtt = time.perf_counter() - sender.send_times[ack_num]
         print(f"收到ACK：{ack_num}, RTT: {rtt}")
         with sender.lock:
             if ack_num >= sender.base:
@@ -14,23 +17,23 @@ def GBN(sender):
                         del sender.timers[seq]
                 sender.base = ack_num + 1
                 sender.congestion.on_ack_received(ack_num, rtt)
-                # 继续发送下一个分组
                 while (
-                    sender.next_seq_num < sender.base + sender.congestion.get_window_size()
+                    sender.next_seq_num
+                    < sender.base + sender.congestion.get_window_size()
                     and sender.next_seq_num < sender.total_packets
                 ):
                     sender.send_segment(sender.next_seq_num)
                     sender.next_seq_num += 1
 
-# Closure, return a SR receiver function
+
 def SR():
     ack_received = {}
 
     def sr_receive_ack(sender):
         while sender.base < sender.total_packets:
-            ack_packet, _ = sender.socket.recvfrom(1024)
+            ack_packet, _ = sender.socket.recvfrom(1024 + 5)
             ack_num = int.from_bytes(ack_packet, byteorder="big")
-            rtt = time.perf_counter() - sender.send_times[ack_num]  # 计算RTT
+            rtt = time.perf_counter() - sender.send_times[ack_num]
             print(f"收到ACK：{ack_num}, RTT: {rtt}")
             with sender.lock:
                 if ack_num in sender.timers:
