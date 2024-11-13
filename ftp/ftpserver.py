@@ -1,9 +1,8 @@
 import socket
 import threading
-from ftpsender import Sender
 from util import upload, download
 
-IP = "172.17.40.155"
+IP = "localhost"
 PORT = 25565
 
 def handle_client(addr, operation, protocol, server_socket):

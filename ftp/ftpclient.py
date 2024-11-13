@@ -1,8 +1,8 @@
 import socket
 from util import upload, download
 
-IP = "47.254.120.45"
-PORT = 44382
+IP = "localhost"
+PORT = 25565
 
 
 def main():
@@ -14,7 +14,7 @@ def main():
     client_socket.sendto(operation.encode(), server_address)
 
     # 选择传输方式
-    protocol = input("请选择传输方式（GBN/SR）：").strip()
+    protocol = "GBN" # input("请选择传输方式（GBN/SR）：").strip()
     client_socket.sendto(protocol.encode(), server_address)
 
     # 接收服务器发送的新端口号
@@ -23,7 +23,7 @@ def main():
     server_address = (IP, new_port)
 
     # 请求文件
-    filename = "test"  # input('请输入要下载的文件名：')
+    filename = input('请输入要下载的文件名：')
     client_socket.sendto(filename.encode(), server_address)
 
     if operation == "upload":
