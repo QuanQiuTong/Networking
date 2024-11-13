@@ -6,6 +6,24 @@ TIMEOUT = 2
 PACKET_SIZE = 1024
 
 
+def save_file(filename, data, md5):
+    # 保存接收到的文件
+    with open(filename, "wb") as f:
+        f.write(data)
+        print(f"成功写入文件，文件大小：{len(data)} 字节")
+
+    # 校验MD5
+    md5_hash = hashlib.md5()
+    md5_hash.update(data)
+    local_md5 = md5_hash.hexdigest()
+
+    if local_md5 == md5:
+        print("文件校验正确")
+    else:
+        print("文件校验错误，接收到的MD5：", md5, "本地计算的MD5：", local_md5)
+        # 根据需求处理校验失败的情况
+
+
 class GBNReceiver:
     def __init__(self, client_socket, filename):
         self.socket = client_socket
@@ -37,7 +55,9 @@ class GBNReceiver:
                     self.expected_seq_num += 1
                 elif seq_num == self.expected_seq_num:
                     self.file_data += data
-                    print(f"接收分组：{seq_num}, 数据长度：{len(data)}, 文件总长度：{len(self.file_data)}")
+                    print(
+                        f"接收分组：{seq_num}, 数据长度：{len(data)}, 文件总长度：{len(self.file_data)}"
+                    )
                     ack_packet = seq_num.to_bytes(4, byteorder="big")
                     self.socket.sendto(ack_packet, addr)
                     print(f"发送ACK：{seq_num}")
@@ -52,21 +72,7 @@ class GBNReceiver:
         except socket.timeout:
             print("接收超时")
 
-        # 保存接收到的文件
-        with open(self.filename, "wb") as f:
-            f.write(self.file_data)
-            print(f"成功写入文件，文件大小：{len(self.file_data)} 字节")
-
-        # 校验MD5
-        md5_hash = hashlib.md5()
-        md5_hash.update(self.file_data)
-        local_md5 = md5_hash.hexdigest()
-
-        if local_md5 == self.received_md5:
-            print("文件校验正确")
-        else:
-            print("文件校验错误，接收到的MD5：", self.received_md5, "本地计算的MD5：", local_md5)
-            # 根据需求处理校验失败的情况
+        save_file(self.filename, self.file_data, self.received_md5)
 
 
 class SRReceiver:
@@ -108,7 +114,9 @@ class SRReceiver:
                             print(f"接收到MD5校验码：{self.received_md5}")
                         else:
                             self.file_data += packet_data
-                            print(f"接收分组：{self.base}, 数据长度：{len(packet_data)}, 文件总长度：{len(self.file_data)}")
+                            print(
+                                f"接收分组：{self.base}, 数据长度：{len(packet_data)}, 文件总长度：{len(self.file_data)}"
+                            )
                         del self.received_packets[self.base]
                         self.base += 1
                 else:
@@ -119,17 +127,4 @@ class SRReceiver:
         except socket.timeout:
             print("接收超时")
 
-        # 保存接收到的文件
-        with open(self.filename, "wb") as f:
-            f.write(self.file_data)
-            print(f"成功写入文件，文件大小：{len(self.file_data)} 字节")
-
-        # 校验MD5
-        md5_hash = hashlib.md5()
-        md5_hash.update(self.file_data)
-        local_md5 = md5_hash.hexdigest()
-        if local_md5 == self.received_md5:
-            print("文件校验正确")
-        else:
-            print("文件校验错误")
-            # 根据需求处理校验失败的情况
+        save_file(self.filename, self.file_data, self.received_md5)

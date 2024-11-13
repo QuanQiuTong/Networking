@@ -103,7 +103,7 @@ class Sender:
                     # 发送数据包
                     self.send_segment(self.next_seq_num)
                     self.next_seq_num += 1
-            time.sleep(0.1)
+            # time.sleep(0.1)
 
     def stop(self):
         self.stop_event.set()
