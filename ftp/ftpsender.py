@@ -40,7 +40,7 @@ class Sender:
         else:
             packet_data = self.md5_data
 
-        flags = (fin << 1) | chk
+        flags = (chk << 1) | fin
 
         packet = seq.to_bytes(4, "big") + flags.to_bytes(1, "big") + packet_data
         self.socket.sendto(packet, self.addr)
@@ -82,8 +82,8 @@ class Sender:
 
         throughput = len(data) / (end_time - start_time)
         print(f"有效吞吐量：{throughput:.2f} Byte/s")
-        utilisation = len(data) / (WINDOW_SIZE * PACKET_SIZE)
-        print(f"流量利用率：{utilisation:.2f}")
+        utilization = len(data) / (self.total_packets * PACKET_SIZE)
+        print(f"流量利用率：{utilization:.2f}")
 
         # 发送结束信号
         self.send_segment(self.total_packets, fin=True)

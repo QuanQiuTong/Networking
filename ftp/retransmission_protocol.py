@@ -4,7 +4,7 @@ PACKET_SIZE = 1024
 
 
 def GBN(sender):
-    while sender.base < sender.total_packets:
+    while sender.base < sender.total_packets and not sender.stop_event.is_set():
         ack_packet, _ = sender.socket.recvfrom(1024 + 5)
         ack_num = int.from_bytes(ack_packet, byteorder="big")
         rtt = time.perf_counter() - sender.send_times[ack_num]
@@ -30,7 +30,7 @@ def SR():
     ack_received = {}
 
     def sr_receive_ack(sender):
-        while sender.base < sender.total_packets:
+        while sender.base < sender.total_packets and not sender.stop_event.is_set():
             ack_packet, _ = sender.socket.recvfrom(1024 + 5)
             ack_num = int.from_bytes(ack_packet, byteorder="big")
             rtt = time.perf_counter() - sender.send_times[ack_num]
