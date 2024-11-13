@@ -1,12 +1,16 @@
 from ftpsender import Sender
 from ftpreceiver import GBNReceiver, SRReceiver
 
-def upload(filename, socket, addr, protocol):
-    with open(filename, "rb") as f:
-        data = f.read()
-        print(f"成功读取文件，文件大小：{len(data)} 字节")
+def upload(filename, socket, addr, protocol, congestion):
+    try:
+        with open(filename, "rb") as f:
+            data = f.read()
+            print(f"成功读取文件，文件大小：{len(data)} 字节")
+    except FileNotFoundError:
+        print("文件不存在 或 无法读取文件")
+        data = b""
 
-    sender = Sender(socket, addr, retransmission=protocol)
+    sender = Sender(socket, addr, retransmission=protocol, congestion_control=congestion)
     sender.start(data)
 
 

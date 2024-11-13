@@ -3,11 +3,12 @@ import threading
 import time
 from util import upload, download
 
-IP = "192.168.120.129"
-# IP = "localhost"
+# IP = "192.168.120.129"
+IP = "localhost"
 PORT = 25565
 TIMEOUT = 2  # 超时时间
 MAX_RETRIES = 5  # 最大重试次数
+
 
 def receive_port(client_socket):
     client_socket.settimeout(TIMEOUT)
@@ -19,27 +20,33 @@ def receive_port(client_socket):
         except socket.timeout:
             return None
 
-def main():
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    server_address = (IP, PORT)
 
+def main():
     while True:
-        op = input("请选择操作类型 (D)download/(U)upload、传输方式(GBN/SR)").strip().split()
-        if len(op) == 2:
-            operation, protocol = op
+        print("选择操作类型、重传协议和拥塞控制算法（参数使用空格分隔）:")
+        print("<(D)download/(U)upload>  [*GBN/SR]  [*Reno/Vegas]:")
+        op = input().strip().split()
+        if len(op) >= 1:
+            operation = op[0]
+            protocol = op[1] if len(op) > 1 else "GBN"
+            congestion = op[2] if len(op) > 2 else "Reno"
+            break
+    while True:
+        filename = input("输入文件名 <filename>:")
+        if filename:
             break
 
-    # 请求文件
-    filename = input("请输入文件名：")
+    # '|' 不是合法的文件名字符，可以用来分隔不同字段
+    handshake_message = f"{operation}|{filename}|{protocol}|{congestion}".encode()
 
-    handshake_message = (operation + " " + protocol).encode()
-
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    server_address = (IP, PORT)
     # 重试机制
     retries = 0
     while retries < MAX_RETRIES:
         # 发送握手消息
         client_socket.sendto(handshake_message, server_address)
-        print(f"发送握手消息到服务器：{operation} {protocol}")
+        print(f"发送握手消息到服务器：{operation} {filename} {protocol} {congestion}")
         # 等待服务器响应
         new_port = receive_port(client_socket)
         if new_port:
@@ -56,34 +63,13 @@ def main():
 
     server_address = (IP, new_port)
 
-    
-    # 同样需要确保文件名发送成功
-    retries = 0
-    while retries < MAX_RETRIES:
-        client_socket.sendto(filename.encode(), server_address)
-        print(f"发送文件名到服务器：{filename}")
-        # 等待服务器确认
-        try:
-            client_socket.settimeout(TIMEOUT)
-            ack, _ = client_socket.recvfrom(1024)
-            if ack.decode() == "FILENAME_ACK":
-                print("服务器已确认文件名。")
-                break
-        except socket.timeout:
-            print("等待服务器确认文件名超时，重试中...")
-            retries += 1
-
-    if retries == MAX_RETRIES:
-        print("服务器未能确认文件名，连接失败。")
-        client_socket.close()
-        return
-
     if operation == "upload" or operation.upper() == "U":
-        upload(filename, client_socket, server_address, protocol)
+        upload(filename, client_socket, server_address, protocol, congestion)
     elif operation == "download" or operation.upper() == "D":
         download(filename, client_socket, protocol)
 
     client_socket.close()
+
 
 if __name__ == "__main__":
     main()

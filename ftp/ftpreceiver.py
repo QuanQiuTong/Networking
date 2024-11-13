@@ -6,11 +6,18 @@ TIMEOUT = 2
 PACKET_SIZE = 1024
 
 
-def save_file(filename, data, md5):
+def save_file(filename, data, md5: str):
+    if not data or data == b"":
+        print("要下载的文件不存在 或 接收到的文件为空")
+        return
+    
     # 保存接收到的文件
-    with open(filename, "wb") as f:
-        f.write(data)
-        print(f"成功写入文件，文件大小：{len(data)} 字节")
+    try:
+        with open(filename, "wb") as f:
+            f.write(data)
+            print(f"成功写入文件，文件大小：{len(data)} 字节")
+    except Exception as e:
+        print("写入文件时发生错误：", e)
 
     # 校验MD5
     md5_hash = hashlib.md5()
@@ -22,6 +29,15 @@ def save_file(filename, data, md5):
     else:
         print("文件校验错误，接收到的MD5：", md5, "本地计算的MD5：", local_md5)
         # 根据需求处理校验失败的情况
+
+
+def depacket(packet):
+    return (
+        int.from_bytes(packet[:4], byteorder="big"),
+        packet[4] & 1,
+        (packet[4] >> 1) & 1,
+        packet[5:],
+    )
 
 
 class GBNReceiver:
@@ -37,16 +53,12 @@ class GBNReceiver:
         try:
             while True:
                 packet, addr = self.socket.recvfrom(PACKET_SIZE + 5)
-                seq_num = int.from_bytes(packet[:4], byteorder="big")
-                flags = packet[4]
-                fin_flag = flags & 1
-                check_flag = (flags >> 1) & 1
-                data = packet[5:]
-                print(f"收到分组：{seq_num}, FIN: {fin_flag}, CHECK: {check_flag}")
-                if fin_flag == 1:
+                seq_num, fin, check, data = depacket(packet)
+                print(f"收到分组：{seq_num}, FIN: {fin}, CHECK: {check}")
+                if fin == 1:
                     print("接收到结束信号")
                     break
-                elif check_flag == 1 and seq_num == self.expected_seq_num:
+                elif check == 1 and seq_num == self.expected_seq_num:
                     print("接收到MD5校验码包")
                     self.received_md5 = data.decode()
                     ack_packet = seq_num.to_bytes(4, byteorder="big")
@@ -90,13 +102,9 @@ class SRReceiver:
         try:
             while True:
                 packet, addr = self.socket.recvfrom(PACKET_SIZE + 5)
-                seq_num = int.from_bytes(packet[:4], byteorder="big")
-                flags = packet[4]
-                fin_flag = flags & 1
-                check_flag = (flags >> 1) & 1
-                data = packet[5:]
-                print(f"收到分组：{seq_num}, FIN: {fin_flag}, CHECK: {check_flag}")
-                if fin_flag == 1:
+                seq_num, fin, check, data = depacket(packet)
+                print(f"收到分组：{seq_num}, FIN: {fin}, CHECK: {check}")
+                if fin == 1:
                     print("接收到结束信号")
                     break
                 elif self.base <= seq_num < self.base + self.window_size:
@@ -104,12 +112,11 @@ class SRReceiver:
                     self.socket.sendto(ack_packet, addr)
                     print(f"发送ACK：{seq_num}")
                     # 将 flags 和 data 一起存储
-                    self.received_packets[seq_num] = (flags, data)
+                    self.received_packets[seq_num] = (check, data)
 
                     while self.base in self.received_packets:
-                        packet_flags, packet_data = self.received_packets[self.base]
-                        check_flag = (packet_flags >> 1) & 1
-                        if check_flag == 1:
+                        check, packet_data = self.received_packets[self.base]
+                        if check == 1:
                             self.received_md5 = packet_data.decode()
                             print(f"接收到MD5校验码：{self.received_md5}")
                         else:
