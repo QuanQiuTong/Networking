@@ -1,6 +1,7 @@
 import threading
 import time
 import hashlib
+from socket import socket as Socket
 from retransmission_protocol import GBN, SR
 from congestion_control import Reno, Vegas
 
@@ -12,7 +13,7 @@ log = print
 # log = lambda *args, **kwargs: None
 
 class Sender:
-    def __init__(self, socket, addr, retransmission, congestion_control=Reno()):
+    def __init__(self, socket: Socket, addr, retransmission, congestion_control=Reno()):
         self.socket = socket
         self.addr = addr
         self.data = b""
@@ -29,7 +30,7 @@ class Sender:
         self.total_packets = 0
         self.stop_event = threading.Event()
 
-        self.socket.settimeout(6)  # 设置超时时间为6秒
+        self.socket.settimeout(1)  # 设置超时时间为1秒
 
     def send_segment(self, seq: int, fin=False):
         chk = seq == self.total_packets - 1
@@ -43,6 +44,7 @@ class Sender:
         flags = (chk << 1) | fin
 
         packet = seq.to_bytes(4, "big") + flags.to_bytes(1, "big") + packet_data
+        self.total_sent += len(packet)
         self.socket.sendto(packet, self.addr)
         self.send_times[seq] = time.perf_counter()  # 记录发送时间
         log(f"发送分组：{seq}, FIN: {fin}, CHECK: {chk}, len: {len(packet)}, start: {start_idx}, end: {end_idx}")
@@ -53,11 +55,12 @@ class Sender:
 
     def timeout_handler(self, seq):
         with self.lock:
+            self.loss_packets += 1
             log(f"超时重传分组：{seq}")
             self.congestion.on_timeout(seq)
             self.send_segment(seq)
 
-    def start(self, data):
+    def start(self, data: bytes):
         self.data = data
 
         md5_hash = hashlib.md5()
@@ -73,17 +76,28 @@ class Sender:
         ack_thread = threading.Thread(target=self.receive_ack, args=(self,))
 
         start_time = time.perf_counter()
+        st = time.time()
+        self.total_sent = 0
+        self.loss_packets = 0
         send_thread.start()
         ack_thread.start()
         send_thread.join()
         ack_thread.join()
         end_time = time.perf_counter()
+        et = time.time()
         print("文件发送完成")
 
+        duration = end_time - start_time
         throughput = len(data) / (end_time - start_time)
         print(f"有效吞吐量：{throughput:.2f} Byte/s")
-        utilization = len(data) / (self.total_packets * PACKET_SIZE)
-        print(f"流量利用率：{utilization:.2f}")
+
+        utilization = len(data) / self.total_sent
+        print(f"文件长度：{len(data)}")
+        print(f"总发送字节数：{self.total_sent}")
+        print(f"流量利用率：{utilization:.6f}")
+
+        print(f"持续时间：{(et - st):.6f} s == {duration:.6f}")
+        print(f"{len(data)}, {duration}, {self.total_sent}, {throughput}, {utilization}, {self.loss_packets}")
 
         # 发送结束信号
         self.send_segment(self.total_packets, fin=True)

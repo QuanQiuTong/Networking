@@ -8,7 +8,7 @@ def GBN(sender):
         ack_packet, _ = sender.socket.recvfrom(1024 + 5)
         ack_num = int.from_bytes(ack_packet, byteorder="big")
         rtt = time.perf_counter() - sender.send_times[ack_num]
-        print(f"收到ACK：{ack_num}, RTT: {rtt}")
+        # print(f"收到ACK：{ack_num}, RTT: {rtt}")
         with sender.lock:
             if ack_num >= sender.base:
                 for seq in range(sender.base, ack_num + 1):
@@ -34,7 +34,7 @@ def SR():
             ack_packet, _ = sender.socket.recvfrom(1024 + 5)
             ack_num = int.from_bytes(ack_packet, byteorder="big")
             rtt = time.perf_counter() - sender.send_times[ack_num]
-            print(f"收到ACK：{ack_num}, RTT: {rtt}")
+            # print(f"收到ACK：{ack_num}, RTT: {rtt}")
             with sender.lock:
                 if ack_num in sender.timers:
                     sender.timers[ack_num].cancel()
