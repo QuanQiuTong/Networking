@@ -6,11 +6,11 @@ from retransmission_protocol import GBN, SR
 from congestion_control import Reno, Vegas
 
 WINDOW_SIZE = 4
-TIMEOUT = 2
+TIMEOUT = 0.5
 PACKET_SIZE = 1024
 
-log = print
-# log = lambda *args, **kwargs: None
+# log = print
+log = lambda *args, **kwargs: None
 
 class Sender:
     def __init__(self, socket: Socket, addr, retransmission, congestion_control=Reno()):

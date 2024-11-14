@@ -56,11 +56,15 @@ class GBNReceiver:
             while True:
                 packet, addr = self.socket.recvfrom(PACKET_SIZE + 5)
                 seq, fin, check, data = depacket(packet)
+                log(f"expected_seq: {self.expected_seq}, seq: {seq}")
                 log(f"收到分组：{seq}, FIN: {fin}, CHECK: {check}")
-                if fin == 1:
+                if fin == 1 and seq == self.expected_seq:
                     log("接收到结束信号")
+                    ack_packet = seq.to_bytes(4, byteorder="big")
+                    self.socket.sendto(ack_packet, addr)
+                    log(f"发送ACK：{seq}")
                     break
-                elif check == 1 and seq == self.expected_seq:
+                if check == 1 and seq == self.expected_seq:
                     log("接收到MD5校验码包")
                     self.received_md5 = data.decode()
                     ack_packet = seq.to_bytes(4, byteorder="big")
@@ -102,10 +106,13 @@ class SRReceiver:
                 packet, addr = self.socket.recvfrom(PACKET_SIZE + 5)
                 seq, fin, check, data = depacket(packet)
                 log(f"收到分组：{seq}, FIN: {fin}, CHECK: {check}")
-                if fin == 1:
+                if fin == 1 and seq == self.base:
                     log("接收到结束信号")
+                    ack_packet = seq.to_bytes(4, byteorder="big")
+                    self.socket.sendto(ack_packet, addr)
+                    log(f"发送ACK：{seq}")
                     break
-                elif self.base <= seq < self.base + self.window_size:
+                if self.base <= seq and seq < self.base + self.window_size:
                     ack_packet = seq.to_bytes(4, byteorder="big")
                     self.socket.sendto(ack_packet, addr)
                     log(f"发送ACK：{seq}")
@@ -128,6 +135,7 @@ class SRReceiver:
                     # 收到窗口外的分组，仍然发送ACK
                     ack_packet = seq.to_bytes(4, byteorder="big")
                     self.socket.sendto(ack_packet, addr)
+                    self.received_packets[seq] = (check, data)
                     log(f"发送ACK（窗口外）：{seq}")
         except socket.timeout:
             print("接收超时")
