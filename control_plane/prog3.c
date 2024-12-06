@@ -70,10 +70,8 @@ struct event *evlist = NULL;   /* the event list */
 
 float clocktime = 0.000;
 
-#include <windows.h>
 int main()
 {
-   SetConsoleOutputCP(CP_UTF8);
    struct event *eventptr;
    
    init();
