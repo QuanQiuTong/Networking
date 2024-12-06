@@ -1,6 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-#define LINKCHANGES 1 
+#define LINKCHANGES 0
 /* ******************************************************************
 Programming assignment 3: implementing distributed, asynchronous,
                           distance vector routing.
@@ -69,9 +70,10 @@ struct event *evlist = NULL;   /* the event list */
 
 float clocktime = 0.000;
 
-
-main()
+#include <windows.h>
+int main()
 {
+   SetConsoleOutputCP(CP_UTF8);
    struct event *eventptr;
    
    init();
@@ -150,7 +152,7 @@ init()                         /* initialize the simulator */
     printf("It is likely that random number generation on your machine\n" ); 
     printf("is different from what this emulator expects.  Please take\n");
     printf("a look at the routine jimsrand() in the emulator code. Sorry. \n");
-    exit();
+    exit(1);
     }
 
    clocktime=0.0;                /* initialize time to 0.0 */
@@ -183,7 +185,7 @@ init()                         /* initialize the simulator */
 /****************************************************************************/
 float jimsrand() 
 {
-  double mmm = 2147483647;   /* largest int  - MACHINE DEPENDENT!!!!!!!!   */
+  double mmm = RAND_MAX;   /* largest int  - MACHINE DEPENDENT!!!!!!!!   */
   float x;                   /* individual students may need to change mmm */ 
   x = rand()/mmm;            /* x should be uniform in [0,1] */
   return(x);
