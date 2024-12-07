@@ -1,0 +1,87 @@
+[Huawei-ospf-1-area-0.0.0.0]
+Dec  7 2024 23:00:07-08:00 Huawei %%01OSPF/4/NBR_CHANGE_E(l)[2]:Neighbor changes
+ event: neighbor status changed. (ProcessId=256, NeighborAddress=2.2.168.192, Ne
+ighborEvent=HelloReceived, NeighborPreviousState=Down, NeighborCurrentState=Init
+) 
+[Huawei-ospf-1-area-0.0.0.0]
+Dec  7 2024 23:00:07-08:00 Huawei %%01OSPF/4/NBR_CHANGE_E(l)[3]:Neighbor changes
+ event: neighbor status changed. (ProcessId=256, NeighborAddress=2.2.168.192, Ne
+ighborEvent=2WayReceived, NeighborPreviousState=Init, NeighborCurrentState=2Way)
+ 
+[Huawei-ospf-1-area-0.0.0.0]
+Dec  7 2024 23:00:08-08:00 Huawei %%01OSPF/4/NBR_CHANGE_E(l)[4]:Neighbor changes
+ event: neighbor status changed. (ProcessId=256, NeighborAddress=3.3.168.192, Ne
+ighborEvent=HelloReceived, NeighborPreviousState=Down, NeighborCurrentState=Init
+) 
+[Huawei-ospf-1-area-0.0.0.0]
+Dec  7 2024 23:00:17-08:00 Huawei %%01OSPF/4/NBR_CHANGE_E(l)[5]:Neighbor changes
+ event: neighbor status changed. (ProcessId=256, NeighborAddress=3.3.168.192, Ne
+ighborEvent=2WayReceived, NeighborPreviousState=Init, NeighborCurrentState=2Way)
+ 
+[Huawei-ospf-1-area-0.0.0.0]
+Dec  7 2024 23:00:34-08:00 Huawei %%01OSPF/4/NBR_CHANGE_E(l)[6]:Neighbor changes
+ event: neighbor status changed. (ProcessId=256, NeighborAddress=3.3.168.192, Ne
+ighborEvent=AdjOk?, NeighborPreviousState=2Way, NeighborCurrentState=ExStart) 
+[Huawei-ospf-1-area-0.0.0.0]
+Dec  7 2024 23:00:35-08:00 Huawei %%01OSPF/4/NBR_CHANGE_E(l)[7]:Neighbor changes
+ event: neighbor status changed. (ProcessId=256, NeighborAddress=2.2.168.192, Ne
+ighborEvent=AdjOk?, NeighborPreviousState=2Way, NeighborCurrentState=ExStart) 
+[Huawei-ospf-1-area-0.0.0.0]
+Dec  7 2024 23:00:35-08:00 Huawei %%01OSPF/4/NBR_CHANGE_E(l)[8]:Neighbor changes
+ event: neighbor status changed. (ProcessId=256, NeighborAddress=2.2.168.192, Ne
+ighborEvent=NegotiationDone, NeighborPreviousState=ExStart, NeighborCurrentState
+=Exchange) 
+[Huawei-ospf-1-area-0.0.0.0]
+Dec  7 2024 23:00:35-08:00 Huawei %%01OSPF/4/NBR_CHANGE_E(l)[9]:Neighbor changes
+ event: neighbor status changed. (ProcessId=256, NeighborAddress=2.2.168.192, Ne
+ighborEvent=ExchangeDone, NeighborPreviousState=Exchange, NeighborCurrentState=L
+oading) 
+[Huawei-ospf-1-area-0.0.0.0]
+Dec  7 2024 23:00:35-08:00 Huawei %%01OSPF/4/NBR_CHANGE_E(l)[10]:Neighbor change
+s event: neighbor status changed. (ProcessId=256, NeighborAddress=2.2.168.192, N
+eighborEvent=LoadingDone, NeighborPreviousState=Loading, NeighborCurrentState=Fu
+ll) 
+[Huawei-ospf-1-area-0.0.0.0]
+Dec  7 2024 23:00:46-08:00 Huawei %%01OSPF/4/NBR_CHANGE_E(l)[11]:Neighbor change
+s event: neighbor status changed. (ProcessId=256, NeighborAddress=3.3.168.192, N
+eighborEvent=NegotiationDone, NeighborPreviousState=ExStart, NeighborCurrentStat
+e=Exchange) 
+[Huawei-ospf-1-area-0.0.0.0]
+Dec  7 2024 23:00:46-08:00 Huawei %%01OSPF/4/NBR_CHANGE_E(l)[12]:Neighbor change
+s event: neighbor status changed. (ProcessId=256, NeighborAddress=3.3.168.192, N
+eighborEvent=ExchangeDone, NeighborPreviousState=Exchange, NeighborCurrentState=
+Loading) 
+[Huawei-ospf-1-area-0.0.0.0]
+Dec  7 2024 23:00:46-08:00 Huawei %%01OSPF/4/NBR_CHANGE_E(l)[13]:Neighbor change
+s event: neighbor status changed. (ProcessId=256, NeighborAddress=3.3.168.192, N
+eighborEvent=LoadingDone, NeighborPreviousState=Loading, NeighborCurrentState=Fu
+ll) 
+[Huawei-ospf-1-area-0.0.0.0]display ip routing-table
+Route Flags: R - relay, D - download to fib
+------------------------------------------------------------------------------
+Routing Tables: Public
+         Destinations : 12       Routes : 12       
+
+Destination/Mask    Proto   Pre  Cost      Flags NextHop         Interface
+
+      127.0.0.0/8   Direct  0    0           D   127.0.0.1       InLoopBack0
+      127.0.0.1/32  Direct  0    0           D   127.0.0.1       InLoopBack0
+127.255.255.255/32  Direct  0    0           D   127.0.0.1       InLoopBack0
+    192.168.1.0/24  OSPF    10   2           D   192.168.2.2     GigabitEthernet
+0/0/0
+    192.168.2.0/24  Direct  0    0           D   192.168.2.3     GigabitEthernet
+0/0/0
+    192.168.2.3/32  Direct  0    0           D   127.0.0.1       GigabitEthernet
+0/0/0
+  192.168.2.255/32  Direct  0    0           D   127.0.0.1       GigabitEthernet
+0/0/0
+    192.168.3.0/24  Direct  0    0           D   192.168.3.2     GigabitEthernet
+0/0/1
+    192.168.3.2/32  Direct  0    0           D   127.0.0.1       GigabitEthernet
+0/0/1
+  192.168.3.255/32  Direct  0    0           D   127.0.0.1       GigabitEthernet
+0/0/1
+    192.168.4.0/24  OSPF    10   2           D   192.168.3.3     GigabitEthernet
+0/0/1
+255.255.255.255/32  Direct  0    0           D   127.0.0.1       InLoopBack0
+

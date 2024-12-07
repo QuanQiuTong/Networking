@@ -1,0 +1,395 @@
+No.     Time           Source                Destination           Protocol Length Info
+     22 49.079000      192.168.2.2           224.0.0.5             OSPF     110    LS Update
+
+Frame 22: 110 bytes on wire (880 bits), 110 bytes captured (880 bits) on interface -, id 0
+Ethernet II, Src: HuaweiTechno_58:5f:8b (00:e0:fc:58:5f:8b), Dst: IPv4mcast_05 (01:00:5e:00:00:05)
+Internet Protocol Version 4, Src: 192.168.2.2, Dst: 224.0.0.5
+Open Shortest Path First
+    OSPF Header
+        Version: 2
+        Message Type: LS Update (4)
+        Packet Length: 76
+        Source OSPF Router: 192.168.1.254
+        Area ID: 0.0.0.0 (Backbone)
+        Checksum: 0xcf72 [correct]
+        Auth Type: Null (0)
+        Auth Data (none): 0000000000000000
+    LS Update Packet
+        Number of LSAs: 1
+        LSA-type 1 (Router-LSA), len 48
+            .000 0000 0000 0001 = LS Age (seconds): 1
+            0... .... .... .... = Do Not Age Flag: 0
+            Options: 0x02, (E) External Routing
+            LS Type: Router-LSA (1)
+            Link State ID: 192.168.1.254
+            Advertising Router: 192.168.1.254
+            Sequence Number: 0x80000005
+            Checksum: 0xdbb8
+            Length: 48
+            Flags: 0x00
+            Number of Links: 2
+            Type: Stub     ID: 192.168.1.0     Data: 255.255.255.0   Metric: 1
+            Type: Stub     ID: 192.168.2.0     Data: 255.255.255.0   Metric: 1
+
+No.     Time           Source                Destination           Protocol Length Info
+     25 49.110000      192.168.2.2           192.168.2.3           OSPF     110    LS Update
+
+Frame 25: 110 bytes on wire (880 bits), 110 bytes captured (880 bits) on interface -, id 0
+Ethernet II, Src: HuaweiTechno_58:5f:8b (00:e0:fc:58:5f:8b), Dst: HuaweiTechno_84:40:fd (00:e0:fc:84:40:fd)
+Internet Protocol Version 4, Src: 192.168.2.2, Dst: 192.168.2.3
+Open Shortest Path First
+    OSPF Header
+        Version: 2
+        Message Type: LS Update (4)
+        Packet Length: 76
+        Source OSPF Router: 192.168.1.254
+        Area ID: 0.0.0.0 (Backbone)
+        Checksum: 0xcf72 [correct]
+        Auth Type: Null (0)
+        Auth Data (none): 0000000000000000
+    LS Update Packet
+        Number of LSAs: 1
+        LSA-type 1 (Router-LSA), len 48
+            .000 0000 0000 0001 = LS Age (seconds): 1
+            0... .... .... .... = Do Not Age Flag: 0
+            Options: 0x02, (E) External Routing
+            LS Type: Router-LSA (1)
+            Link State ID: 192.168.1.254
+            Advertising Router: 192.168.1.254
+            Sequence Number: 0x80000005
+            Checksum: 0xdbb8
+            Length: 48
+            Flags: 0x00
+            Number of Links: 2
+            Type: Stub     ID: 192.168.1.0     Data: 255.255.255.0   Metric: 1
+            Type: Stub     ID: 192.168.2.0     Data: 255.255.255.0   Metric: 1
+
+No.     Time           Source                Destination           Protocol Length Info
+     28 49.125000      192.168.2.3           192.168.2.2           OSPF     110    LS Update
+
+Frame 28: 110 bytes on wire (880 bits), 110 bytes captured (880 bits) on interface -, id 0
+Ethernet II, Src: HuaweiTechno_84:40:fd (00:e0:fc:84:40:fd), Dst: HuaweiTechno_58:5f:8b (00:e0:fc:58:5f:8b)
+Internet Protocol Version 4, Src: 192.168.2.3, Dst: 192.168.2.2
+Open Shortest Path First
+    OSPF Header
+        Version: 2
+        Message Type: LS Update (4)
+        Packet Length: 76
+        Source OSPF Router: 192.168.2.3
+        Area ID: 0.0.0.0 (Backbone)
+        Checksum: 0xff3d [correct]
+        Auth Type: Null (0)
+        Auth Data (none): 0000000000000000
+    LS Update Packet
+        Number of LSAs: 1
+        LSA-type 1 (Router-LSA), len 48
+            .000 0000 0000 0001 = LS Age (seconds): 1
+            0... .... .... .... = Do Not Age Flag: 0
+            Options: 0x02, (E) External Routing
+            LS Type: Router-LSA (1)
+            Link State ID: 192.168.2.3
+            Advertising Router: 192.168.2.3
+            Sequence Number: 0x80000004
+            Checksum: 0xa9df
+            Length: 48
+            Flags: 0x00
+            Number of Links: 2
+            Type: Stub     ID: 192.168.2.0     Data: 255.255.255.0   Metric: 1
+            Type: Stub     ID: 192.168.3.0     Data: 255.255.255.0   Metric: 1
+
+No.     Time           Source                Destination           Protocol Length Info
+     29 49.125000      192.168.2.2           224.0.0.5             OSPF     110    LS Update
+
+Frame 29: 110 bytes on wire (880 bits), 110 bytes captured (880 bits) on interface -, id 0
+Ethernet II, Src: HuaweiTechno_58:5f:8b (00:e0:fc:58:5f:8b), Dst: IPv4mcast_05 (01:00:5e:00:00:05)
+Internet Protocol Version 4, Src: 192.168.2.2, Dst: 224.0.0.5
+Open Shortest Path First
+    OSPF Header
+        Version: 2
+        Message Type: LS Update (4)
+        Packet Length: 76
+        Source OSPF Router: 192.168.1.254
+        Area ID: 0.0.0.0 (Backbone)
+        Checksum: 0x5fe2 [correct]
+        Auth Type: Null (0)
+        Auth Data (none): 0000000000000000
+    LS Update Packet
+        Number of LSAs: 1
+        LSA-type 1 (Router-LSA), len 48
+            .000 0000 0000 0001 = LS Age (seconds): 1
+            0... .... .... .... = Do Not Age Flag: 0
+            Options: 0x02, (E) External Routing
+            LS Type: Router-LSA (1)
+            Link State ID: 192.168.1.254
+            Advertising Router: 192.168.1.254
+            Sequence Number: 0x80000006
+            Checksum: 0x889b
+            Length: 48
+            Flags: 0x00
+            Number of Links: 2
+            Type: Stub     ID: 192.168.1.0     Data: 255.255.255.0   Metric: 1
+            Type: Transit  ID: 192.168.2.3     Data: 192.168.2.2     Metric: 1
+
+No.     Time           Source                Destination           Protocol Length Info
+     30 49.125000      192.168.2.3           224.0.0.5             OSPF     142    LS Update
+
+Frame 30: 142 bytes on wire (1136 bits), 142 bytes captured (1136 bits) on interface -, id 0
+Ethernet II, Src: HuaweiTechno_84:40:fd (00:e0:fc:84:40:fd), Dst: IPv4mcast_05 (01:00:5e:00:00:05)
+Internet Protocol Version 4, Src: 192.168.2.3, Dst: 224.0.0.5
+Open Shortest Path First
+    OSPF Header
+        Version: 2
+        Message Type: LS Update (4)
+        Packet Length: 108
+        Source OSPF Router: 192.168.2.3
+        Area ID: 0.0.0.0 (Backbone)
+        Checksum: 0xd545 [correct]
+        Auth Type: Null (0)
+        Auth Data (none): 0000000000000000
+    LS Update Packet
+        Number of LSAs: 2
+        LSA-type 1 (Router-LSA), len 48
+            .000 0000 0000 0001 = LS Age (seconds): 1
+            0... .... .... .... = Do Not Age Flag: 0
+            Options: 0x02, (E) External Routing
+            LS Type: Router-LSA (1)
+            Link State ID: 192.168.2.3
+            Advertising Router: 192.168.2.3
+            Sequence Number: 0x80000005
+            Checksum: 0x2bec
+            Length: 48
+            Flags: 0x00
+            Number of Links: 2
+            Type: Transit  ID: 192.168.2.3     Data: 192.168.2.3     Metric: 1
+            Type: Stub     ID: 192.168.3.0     Data: 255.255.255.0   Metric: 1
+        LSA-type 2 (Network-LSA), len 32
+            .000 0000 0000 0001 = LS Age (seconds): 1
+            0... .... .... .... = Do Not Age Flag: 0
+            Options: 0x02, (E) External Routing
+            LS Type: Network-LSA (2)
+            Link State ID: 192.168.2.3
+            Advertising Router: 192.168.2.3
+            Sequence Number: 0x80000001
+            Checksum: 0x594c
+            Length: 32
+            Netmask: 255.255.255.0
+            Attached Router: 192.168.2.3
+            Attached Router: 192.168.1.254
+
+No.     Time           Source                Destination           Protocol Length Info
+     35 56.188000      192.168.2.3           224.0.0.5             OSPF     142    LS Update
+
+Frame 35: 142 bytes on wire (1136 bits), 142 bytes captured (1136 bits) on interface -, id 0
+Ethernet II, Src: HuaweiTechno_84:40:fd (00:e0:fc:84:40:fd), Dst: IPv4mcast_05 (01:00:5e:00:00:05)
+Internet Protocol Version 4, Src: 192.168.2.3, Dst: 224.0.0.5
+Open Shortest Path First
+    OSPF Header
+        Version: 2
+        Message Type: LS Update (4)
+        Packet Length: 108
+        Source OSPF Router: 192.168.2.3
+        Area ID: 0.0.0.0 (Backbone)
+        Checksum: 0xd941 [correct]
+        Auth Type: Null (0)
+        Auth Data (none): 0000000000000000
+    LS Update Packet
+        Number of LSAs: 2
+        LSA-type 1 (Router-LSA), len 48
+            .000 0000 0000 0001 = LS Age (seconds): 1
+            0... .... .... .... = Do Not Age Flag: 0
+            Options: 0x02, (E) External Routing
+            LS Type: Router-LSA (1)
+            Link State ID: 192.168.2.3
+            Advertising Router: 192.168.2.3
+            Sequence Number: 0x80000006
+            Checksum: 0x29ed
+            Length: 48
+            Flags: 0x00
+            Number of Links: 2
+            Type: Transit  ID: 192.168.2.3     Data: 192.168.2.3     Metric: 1
+            Type: Stub     ID: 192.168.3.0     Data: 255.255.255.0   Metric: 1
+        LSA-type 2 (Network-LSA), len 32
+            .000 0000 0000 0001 = LS Age (seconds): 1
+            0... .... .... .... = Do Not Age Flag: 0
+            Options: 0x02, (E) External Routing
+            LS Type: Network-LSA (2)
+            Link State ID: 192.168.2.3
+            Advertising Router: 192.168.2.3
+            Sequence Number: 0x80000002
+            Checksum: 0x574d
+            Length: 32
+            Netmask: 255.255.255.0
+            Attached Router: 192.168.2.3
+            Attached Router: 192.168.1.254
+
+No.     Time           Source                Destination           Protocol Length Info
+     38 59.797000      192.168.2.3           224.0.0.5             OSPF     110    LS Update
+
+Frame 38: 110 bytes on wire (880 bits), 110 bytes captured (880 bits) on interface -, id 0
+Ethernet II, Src: HuaweiTechno_84:40:fd (00:e0:fc:84:40:fd), Dst: IPv4mcast_05 (01:00:5e:00:00:05)
+Internet Protocol Version 4, Src: 192.168.2.3, Dst: 224.0.0.5
+Open Shortest Path First
+    OSPF Header
+        Version: 2
+        Message Type: LS Update (4)
+        Packet Length: 76
+        Source OSPF Router: 192.168.2.3
+        Area ID: 0.0.0.0 (Backbone)
+        Checksum: 0xbe7e [correct]
+        Auth Type: Null (0)
+        Auth Data (none): 0000000000000000
+    LS Update Packet
+        Number of LSAs: 1
+        LSA-type 1 (Router-LSA), len 48
+            .000 0000 0000 0001 = LS Age (seconds): 1
+            0... .... .... .... = Do Not Age Flag: 0
+            Options: 0x02, (E) External Routing
+            LS Type: Router-LSA (1)
+            Link State ID: 192.168.2.3
+            Advertising Router: 192.168.2.3
+            Sequence Number: 0x80000007
+            Checksum: 0x27ee
+            Length: 48
+            Flags: 0x00
+            Number of Links: 2
+            Type: Transit  ID: 192.168.2.3     Data: 192.168.2.3     Metric: 1
+            Type: Stub     ID: 192.168.3.0     Data: 255.255.255.0   Metric: 1
+
+No.     Time           Source                Destination           Protocol Length Info
+     39 59.829000      192.168.2.3           224.0.0.5             OSPF     158    LS Update
+
+Frame 39: 158 bytes on wire (1264 bits), 158 bytes captured (1264 bits) on interface -, id 0
+Ethernet II, Src: HuaweiTechno_84:40:fd (00:e0:fc:84:40:fd), Dst: IPv4mcast_05 (01:00:5e:00:00:05)
+Internet Protocol Version 4, Src: 192.168.2.3, Dst: 224.0.0.5
+Open Shortest Path First
+    OSPF Header
+        Version: 2
+        Message Type: LS Update (4)
+        Packet Length: 124
+        Source OSPF Router: 192.168.2.3
+        Area ID: 0.0.0.0 (Backbone)
+        Checksum: 0xea1f [correct]
+        Auth Type: Null (0)
+        Auth Data (none): 0000000000000000
+    LS Update Packet
+        Number of LSAs: 2
+        LSA-type 1 (Router-LSA), len 48
+            .000 0000 0000 0010 = LS Age (seconds): 2
+            0... .... .... .... = Do Not Age Flag: 0
+            Options: 0x02, (E) External Routing
+            LS Type: Router-LSA (1)
+            Link State ID: 192.168.3.3
+            Advertising Router: 192.168.3.3
+            Sequence Number: 0x80000004
+            Checksum: 0xb5cf
+            Length: 48
+            Flags: 0x00
+            Number of Links: 2
+            Type: Stub     ID: 192.168.3.0     Data: 255.255.255.0   Metric: 1
+            Type: Stub     ID: 192.168.4.0     Data: 255.255.255.0   Metric: 1
+        LSA-type 1 (Router-LSA), len 48
+            .000 0000 0000 0001 = LS Age (seconds): 1
+            0... .... .... .... = Do Not Age Flag: 0
+            Options: 0x02, (E) External Routing
+            LS Type: Router-LSA (1)
+            Link State ID: 192.168.2.3
+            Advertising Router: 192.168.2.3
+            Sequence Number: 0x80000008
+            Checksum: 0xecb7
+            Length: 48
+            Flags: 0x00
+            Number of Links: 2
+            Type: Transit  ID: 192.168.2.3     Data: 192.168.2.3     Metric: 1
+            Type: Transit  ID: 192.168.3.3     Data: 192.168.3.2     Metric: 1
+
+No.     Time           Source                Destination           Protocol Length Info
+     40 59.844000      192.168.2.3           224.0.0.5             OSPF     142    LS Update
+
+Frame 40: 142 bytes on wire (1136 bits), 142 bytes captured (1136 bits) on interface -, id 0
+Ethernet II, Src: HuaweiTechno_84:40:fd (00:e0:fc:84:40:fd), Dst: IPv4mcast_05 (01:00:5e:00:00:05)
+Internet Protocol Version 4, Src: 192.168.2.3, Dst: 224.0.0.5
+Open Shortest Path First
+    OSPF Header
+        Version: 2
+        Message Type: LS Update (4)
+        Packet Length: 108
+        Source OSPF Router: 192.168.2.3
+        Area ID: 0.0.0.0 (Backbone)
+        Checksum: 0x78a0 [correct]
+        Auth Type: Null (0)
+        Auth Data (none): 0000000000000000
+    LS Update Packet
+        Number of LSAs: 2
+        LSA-type 1 (Router-LSA), len 48
+            .000 0000 0000 0010 = LS Age (seconds): 2
+            0... .... .... .... = Do Not Age Flag: 0
+            Options: 0x02, (E) External Routing
+            LS Type: Router-LSA (1)
+            Link State ID: 192.168.3.3
+            Advertising Router: 192.168.3.3
+            Sequence Number: 0x80000005
+            Checksum: 0x44ce
+            Length: 48
+            Flags: 0x00
+            Number of Links: 2
+            Type: Transit  ID: 192.168.3.3     Data: 192.168.3.3     Metric: 1
+            Type: Stub     ID: 192.168.4.0     Data: 255.255.255.0   Metric: 1
+        LSA-type 2 (Network-LSA), len 32
+            .000 0000 0000 0010 = LS Age (seconds): 2
+            0... .... .... .... = Do Not Age Flag: 0
+            Options: 0x02, (E) External Routing
+            LS Type: Network-LSA (2)
+            Link State ID: 192.168.3.3
+            Advertising Router: 192.168.3.3
+            Sequence Number: 0x80000001
+            Checksum: 0x9508
+            Length: 32
+            Netmask: 255.255.255.0
+            Attached Router: 192.168.3.3
+            Attached Router: 192.168.2.3
+
+No.     Time           Source                Destination           Protocol Length Info
+     50 68.000000      192.168.2.3           224.0.0.5             OSPF     142    LS Update
+
+Frame 50: 142 bytes on wire (1136 bits), 142 bytes captured (1136 bits) on interface -, id 0
+Ethernet II, Src: HuaweiTechno_84:40:fd (00:e0:fc:84:40:fd), Dst: IPv4mcast_05 (01:00:5e:00:00:05)
+Internet Protocol Version 4, Src: 192.168.2.3, Dst: 224.0.0.5
+Open Shortest Path First
+    OSPF Header
+        Version: 2
+        Message Type: LS Update (4)
+        Packet Length: 108
+        Source OSPF Router: 192.168.2.3
+        Area ID: 0.0.0.0 (Backbone)
+        Checksum: 0x7c9c [correct]
+        Auth Type: Null (0)
+        Auth Data (none): 0000000000000000
+    LS Update Packet
+        Number of LSAs: 2
+        LSA-type 1 (Router-LSA), len 48
+            .000 0000 0000 0010 = LS Age (seconds): 2
+            0... .... .... .... = Do Not Age Flag: 0
+            Options: 0x02, (E) External Routing
+            LS Type: Router-LSA (1)
+            Link State ID: 192.168.3.3
+            Advertising Router: 192.168.3.3
+            Sequence Number: 0x80000006
+            Checksum: 0x42cf
+            Length: 48
+            Flags: 0x00
+            Number of Links: 2
+            Type: Transit  ID: 192.168.3.3     Data: 192.168.3.3     Metric: 1
+            Type: Stub     ID: 192.168.4.0     Data: 255.255.255.0   Metric: 1
+        LSA-type 2 (Network-LSA), len 32
+            .000 0000 0000 0010 = LS Age (seconds): 2
+            0... .... .... .... = Do Not Age Flag: 0
+            Options: 0x02, (E) External Routing
+            LS Type: Network-LSA (2)
+            Link State ID: 192.168.3.3
+            Advertising Router: 192.168.3.3
+            Sequence Number: 0x80000002
+            Checksum: 0x9309
+            Length: 32
+            Netmask: 255.255.255.0
+            Attached Router: 192.168.3.3
+            Attached Router: 192.168.2.3

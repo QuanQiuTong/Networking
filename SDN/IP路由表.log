@@ -1,0 +1,82 @@
+Route Flags: R - relay, D - download to fib
+------------------------------------------------------------------------------
+Routing Tables: Public
+         Destinations : 12       Routes : 12       
+
+Destination/Mask    Proto   Pre  Cost      Flags NextHop         Interface
+
+      127.0.0.0/8   Direct  0    0           D   127.0.0.1       InLoopBack0
+      127.0.0.1/32  Direct  0    0           D   127.0.0.1       InLoopBack0
+127.255.255.255/32  Direct  0    0           D   127.0.0.1       InLoopBack0
+    192.168.1.0/24  Direct  0    0           D   192.168.1.254   GigabitEthernet
+0/0/0
+  192.168.1.254/32  Direct  0    0           D   127.0.0.1       GigabitEthernet
+0/0/0
+  192.168.1.255/32  Direct  0    0           D   127.0.0.1       GigabitEthernet
+0/0/0
+    192.168.2.0/24  Direct  0    0           D   192.168.2.2     GigabitEthernet
+0/0/1
+    192.168.2.2/32  Direct  0    0           D   127.0.0.1       GigabitEthernet
+0/0/1
+  192.168.2.255/32  Direct  0    0           D   127.0.0.1       GigabitEthernet
+0/0/1
+    192.168.3.0/24  RIP     100  1           D   192.168.2.3     GigabitEthernet
+0/0/1
+    192.168.4.0/24  RIP     100  2           D   192.168.2.3     GigabitEthernet
+0/0/1
+255.255.255.255/32  Direct  0    0           D   127.0.0.1       InLoopBack0
+
+------------------------------------------------------------------------------
+Routing Tables: Public
+         Destinations : 12       Routes : 12       
+
+Destination/Mask    Proto   Pre  Cost      Flags NextHop         Interface
+
+      127.0.0.0/8   Direct  0    0           D   127.0.0.1       InLoopBack0
+      127.0.0.1/32  Direct  0    0           D   127.0.0.1       InLoopBack0
+127.255.255.255/32  Direct  0    0           D   127.0.0.1       InLoopBack0
+    192.168.1.0/24  RIP     100  1           D   192.168.2.2     GigabitEthernet
+0/0/0
+    192.168.2.0/24  Direct  0    0           D   192.168.2.3     GigabitEthernet
+0/0/0
+    192.168.2.3/32  Direct  0    0           D   127.0.0.1       GigabitEthernet
+0/0/0
+  192.168.2.255/32  Direct  0    0           D   127.0.0.1       GigabitEthernet
+0/0/0
+    192.168.3.0/24  Direct  0    0           D   192.168.3.2     GigabitEthernet
+0/0/1
+    192.168.3.2/32  Direct  0    0           D   127.0.0.1       GigabitEthernet
+0/0/1
+  192.168.3.255/32  Direct  0    0           D   127.0.0.1       GigabitEthernet
+0/0/1
+    192.168.4.0/24  RIP     100  1           D   192.168.3.3     GigabitEthernet
+0/0/1
+255.255.255.255/32  Direct  0    0           D   127.0.0.1       InLoopBack0
+
+------------------------------------------------------------------------------
+Routing Tables: Public
+         Destinations : 12       Routes : 12       
+
+Destination/Mask    Proto   Pre  Cost      Flags NextHop         Interface
+
+      127.0.0.0/8   Direct  0    0           D   127.0.0.1       InLoopBack0
+      127.0.0.1/32  Direct  0    0           D   127.0.0.1       InLoopBack0
+127.255.255.255/32  Direct  0    0           D   127.0.0.1       InLoopBack0
+    192.168.1.0/24  RIP     100  2           D   192.168.3.2     GigabitEthernet
+0/0/0
+    192.168.2.0/24  RIP     100  1           D   192.168.3.2     GigabitEthernet
+0/0/0
+    192.168.3.0/24  Direct  0    0           D   192.168.3.3     GigabitEthernet
+0/0/0
+    192.168.3.3/32  Direct  0    0           D   127.0.0.1       GigabitEthernet
+0/0/0
+  192.168.3.255/32  Direct  0    0           D   127.0.0.1       GigabitEthernet
+0/0/0
+    192.168.4.0/24  Direct  0    0           D   192.168.4.254   GigabitEthernet
+0/0/1
+  192.168.4.254/32  Direct  0    0           D   127.0.0.1       GigabitEthernet
+0/0/1
+  192.168.4.255/32  Direct  0    0           D   127.0.0.1       GigabitEthernet
+0/0/1
+255.255.255.255/32  Direct  0    0           D   127.0.0.1       InLoopBack0
+

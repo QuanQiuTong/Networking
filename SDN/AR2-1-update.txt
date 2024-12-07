@@ -1,0 +1,75 @@
+No.     Time           Source                Destination           Protocol Length Info
+     23 48.422000      192.168.3.2           224.0.0.5             OSPF     110    LS Update
+
+Frame 23: 110 bytes on wire (880 bits), 110 bytes captured (880 bits) on interface -, id 0
+Ethernet II, Src: HuaweiTechno_84:40:fe (00:e0:fc:84:40:fe), Dst: IPv4mcast_05 (01:00:5e:00:00:05)
+Internet Protocol Version 4, Src: 192.168.3.2, Dst: 224.0.0.5
+Open Shortest Path First
+    OSPF Header
+    LS Update Packet
+        Number of LSAs: 1
+        LSA-type 1 (Router-LSA), len 48
+
+No.     Time           Source                Destination           Protocol Length Info
+     25 48.422000      192.168.3.2           192.168.3.3           OSPF     190    LS Update
+
+Frame 25: 190 bytes on wire (1520 bits), 190 bytes captured (1520 bits) on interface -, id 0
+Ethernet II, Src: HuaweiTechno_84:40:fe (00:e0:fc:84:40:fe), Dst: HuaweiTechno_b4:4b:38 (00:e0:fc:b4:4b:38)
+Internet Protocol Version 4, Src: 192.168.3.2, Dst: 192.168.3.3
+Open Shortest Path First
+    OSPF Header
+    LS Update Packet
+        Number of LSAs: 3
+        LSA-type 1 (Router-LSA), len 48
+        LSA-type 1 (Router-LSA), len 48
+        LSA-type 2 (Network-LSA), len 32
+
+No.     Time           Source                Destination           Protocol Length Info
+     27 48.438000      192.168.3.3           192.168.3.2           OSPF     110    LS Update
+
+Frame 27: 110 bytes on wire (880 bits), 110 bytes captured (880 bits) on interface -, id 0
+Ethernet II, Src: HuaweiTechno_b4:4b:38 (00:e0:fc:b4:4b:38), Dst: HuaweiTechno_84:40:fe (00:e0:fc:84:40:fe)
+Internet Protocol Version 4, Src: 192.168.3.3, Dst: 192.168.3.2
+Open Shortest Path First
+    OSPF Header
+    LS Update Packet
+        Number of LSAs: 1
+        LSA-type 1 (Router-LSA), len 48
+
+No.     Time           Source                Destination           Protocol Length Info
+     29 48.438000      192.168.3.2           224.0.0.5             OSPF     110    LS Update
+
+Frame 29: 110 bytes on wire (880 bits), 110 bytes captured (880 bits) on interface -, id 0
+Ethernet II, Src: HuaweiTechno_84:40:fe (00:e0:fc:84:40:fe), Dst: IPv4mcast_05 (01:00:5e:00:00:05)
+Internet Protocol Version 4, Src: 192.168.3.2, Dst: 224.0.0.5
+Open Shortest Path First
+    OSPF Header
+    LS Update Packet
+        Number of LSAs: 1
+        LSA-type 1 (Router-LSA), len 48
+
+No.     Time           Source                Destination           Protocol Length Info
+     30 48.453000      192.168.3.3           224.0.0.5             OSPF     142    LS Update
+
+Frame 30: 142 bytes on wire (1136 bits), 142 bytes captured (1136 bits) on interface -, id 0
+Ethernet II, Src: HuaweiTechno_b4:4b:38 (00:e0:fc:b4:4b:38), Dst: IPv4mcast_05 (01:00:5e:00:00:05)
+Internet Protocol Version 4, Src: 192.168.3.3, Dst: 224.0.0.5
+Open Shortest Path First
+    OSPF Header
+    LS Update Packet
+        Number of LSAs: 2
+        LSA-type 1 (Router-LSA), len 48
+        LSA-type 2 (Network-LSA), len 32
+
+No.     Time           Source                Destination           Protocol Length Info
+     42 56.594000      192.168.3.3           224.0.0.5             OSPF     142    LS Update
+
+Frame 42: 142 bytes on wire (1136 bits), 142 bytes captured (1136 bits) on interface -, id 0
+Ethernet II, Src: HuaweiTechno_b4:4b:38 (00:e0:fc:b4:4b:38), Dst: IPv4mcast_05 (01:00:5e:00:00:05)
+Internet Protocol Version 4, Src: 192.168.3.3, Dst: 224.0.0.5
+Open Shortest Path First
+    OSPF Header
+    LS Update Packet
+        Number of LSAs: 2
+        LSA-type 1 (Router-LSA), len 48
+        LSA-type 2 (Network-LSA), len 32

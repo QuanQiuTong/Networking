@@ -1,11 +1,20 @@
-## Part1: 分布式距离路由算法
+# Lab-6 Part-1: 分布式距离路由算法
 
-### 1. 总体架构
+因为所提供的代码十分古老，基于K&R C语言标准，  
+所以指定了`-std=c89`编译选项。这样编译不会出现warning。
+
+Makefile:
+```makefile
+all: prog3.c node0.c node1.c node2.c node3.c
+	gcc -std=c89 -o prog3 prog3.c node0.c node1.c node2.c node3.c
+```
+
+## 1. 总体架构
 每个节点(0-3)都有两个主要函数:
 - `rtinit`: 初始化节点的距离表
 - `rtupdate`: 处理来自邻居的路由更新
 
-### 2. 关键数据结构
+## 2. 关键数据结构
 ```c
 struct distance_table {
   int costs[4][4];  // costs[i][j]表示通过邻居j到达节点i的开销
@@ -18,7 +27,7 @@ struct rtpkt {
 };
 ```
 
-### 3. 节点初始化过程(以node0为例)
+## 3. 节点初始化过程(以node0为例)
 ```c
 void rtinit0() {
     // 1. 初始化距离表为无穷大
@@ -38,7 +47,7 @@ void rtinit0() {
 }
 ```
 
-### 4. 更新处理过程
+## 4. 更新处理过程
 ```c
 void rtupdate0(struct rtpkt *rcvdpkt) {
     // 1. 收到邻居更新后,计算新路径开销
@@ -62,7 +71,7 @@ void rtupdate0(struct rtpkt *rcvdpkt) {
 }
 ```
 
-### 5. 链路成本变化处理
+## 5. 链路成本变化处理
 ```c
 void linkhandler0(int linkid, int newcost) {
     // 1. 更新直接链路成本
@@ -73,8 +82,6 @@ void linkhandler0(int linkid, int newcost) {
 }
 ```
 
-### 结果
+## 结果
 ![alt text](image-15.png)
-
-## Part2: RIP和OSPF路由协议观察
 
