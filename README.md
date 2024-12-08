@@ -10,4 +10,5 @@
 - ftp: 实现**运输层**可靠传输协议
 - mininet: **网络层数据平面**观察实验
 - control-plane: **网络层控制平面**编程实验
-- SDN: **SDN**实验
+- SDN: **SDN**路由协议观察
+- FlowTableDistr: **SDN**流表分发实验
