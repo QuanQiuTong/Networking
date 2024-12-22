@@ -1,5 +1,4 @@
 qqt@ubuntu:~/Desktop/控制平面2$ sudo python3 sequential_traffic_generator.py 
-[sudo] password for qqt: 
 *** Creating network
 *** Adding controller
 *** Adding hosts:
@@ -46,11 +45,12 @@ h1 h2 h3 h4 h5 h6 h7 h8 h9 h10 h11 h12 h13 h14 h15 h16
 
 qqt@ubuntu:/mnt/hgfs/Networking/FlowTableDistr$ ryu-manager --observe-links LLR.py
 loading app LLR.py
+loading app ryu.controller.ofp_handler
 loading app ryu.topology.switches
 loading app ryu.controller.ofp_handler
 instantiating app LLR.py of ProjectController
-instantiating app ryu.topology.switches of Switches
 instantiating app ryu.controller.ofp_handler of OFPHandler
+instantiating app ryu.topology.switches of Switches
 switch_features_handler is called
 switch_features_handler is called
 switch_features_handler is called
@@ -71,54 +71,54 @@ switch_features_handler is called
 switch_features_handler is called
 switch_features_handler is called
 switch_features_handler is called
-EventSwitchEnter<dpid=1, 4 ports>
-EventSwitchEnter<dpid=3, 4 ports>
-EventSwitchEnter<dpid=10, 4 ports>
-EventSwitchEnter<dpid=6, 4 ports>
 EventSwitchEnter<dpid=19, 4 ports>
-EventSwitchEnter<dpid=14, 4 ports>
-EventSwitchEnter<dpid=17, 4 ports>
-EventSwitchEnter<dpid=5, 4 ports>
-EventSwitchEnter<dpid=16, 4 ports>
-EventSwitchEnter<dpid=4, 4 ports>
-EventSwitchEnter<dpid=15, 4 ports>
 EventSwitchEnter<dpid=13, 4 ports>
-EventSwitchEnter<dpid=12, 4 ports>
+EventSwitchEnter<dpid=16, 4 ports>
 EventSwitchEnter<dpid=2, 4 ports>
 EventSwitchEnter<dpid=11, 4 ports>
-EventSwitchEnter<dpid=7, 4 ports>
-EventSwitchEnter<dpid=18, 4 ports>
+EventSwitchEnter<dpid=12, 4 ports>
 EventSwitchEnter<dpid=8, 4 ports>
 EventSwitchEnter<dpid=9, 4 ports>
+EventSwitchEnter<dpid=5, 4 ports>
+EventSwitchEnter<dpid=17, 4 ports>
 EventSwitchEnter<dpid=20, 4 ports>
+EventSwitchEnter<dpid=18, 4 ports>
+EventSwitchEnter<dpid=3, 4 ports>
+EventSwitchEnter<dpid=1, 4 ports>
+EventSwitchEnter<dpid=15, 4 ports>
+EventSwitchEnter<dpid=10, 4 ports>
+EventSwitchEnter<dpid=6, 4 ports>
+EventSwitchEnter<dpid=4, 4 ports>
+EventSwitchEnter<dpid=14, 4 ports>
+EventSwitchEnter<dpid=7, 4 ports>
 h1 -> s1 -> s9 -> s17 -> s11 -> s3 -> h5
-h5 -> s3 -> s12 -> s19 -> s10 -> s1 -> h1
+h5 -> s3 -> s12 -> s17 -> s10 -> s1 -> h1
 h1 -> s1 -> s9 -> s17 -> s11 -> s3 -> h6
-h6 -> s3 -> s12 -> s19 -> s10 -> s1 -> h1
+h6 -> s3 -> s12 -> s17 -> s10 -> s1 -> h1
 h2 -> s1 -> s9 -> s17 -> s11 -> s3 -> h6
-h6 -> s3 -> s12 -> s19 -> s10 -> s1 -> h2
+h6 -> s3 -> s12 -> s17 -> s10 -> s1 -> h2
 h2 -> s1 -> s9 -> s17 -> s11 -> s4 -> h7
-h7 -> s4 -> s12 -> s19 -> s10 -> s1 -> h2
-h3 -> s2 -> s9 -> s18 -> s11 -> s4 -> h7
-h7 -> s4 -> s12 -> s20 -> s10 -> s2 -> h3
-EventSwitchLeave<dpid=19, 0 ports>
+h7 -> s4 -> s11 -> s18 -> s10 -> s1 -> h2
+h3 -> s2 -> s9 -> s18 -> s12 -> s4 -> h7
+h3 -> s2 -> s9 -> s18 -> s12 -> s4 -> h8
 EventSwitchLeave<dpid=1, 0 ports>
 EventSwitchLeave<dpid=6, 0 ports>
-EventSwitchLeave<dpid=3, 0 ports>
+EventSwitchLeave<dpid=19, 0 ports>
 EventSwitchLeave<dpid=10, 0 ports>
-EventSwitchLeave<dpid=14, 0 ports>
-EventSwitchLeave<dpid=13, 0 ports>
+EventSwitchLeave<dpid=3, 0 ports>
 EventSwitchLeave<dpid=15, 0 ports>
 EventSwitchLeave<dpid=8, 0 ports>
+EventSwitchLeave<dpid=13, 0 ports>
 EventSwitchLeave<dpid=7, 0 ports>
 EventSwitchLeave<dpid=4, 0 ports>
-EventSwitchLeave<dpid=12, 0 ports>
-EventSwitchLeave<dpid=5, 0 ports>
 EventSwitchLeave<dpid=20, 0 ports>
-EventSwitchLeave<dpid=17, 0 ports>
-EventSwitchLeave<dpid=18, 0 ports>
+EventSwitchLeave<dpid=5, 0 ports>
 EventSwitchLeave<dpid=2, 0 ports>
-EventSwitchLeave<dpid=16, 0 ports>
-EventSwitchLeave<dpid=9, 0 ports>
 EventSwitchLeave<dpid=11, 0 ports>
+EventSwitchLeave<dpid=16, 0 ports>
+EventSwitchLeave<dpid=17, 0 ports>
+EventSwitchLeave<dpid=9, 0 ports>
+EventSwitchLeave<dpid=12, 0 ports>
+EventSwitchLeave<dpid=18, 0 ports>
+EventSwitchLeave<dpid=14, 0 ports>
 

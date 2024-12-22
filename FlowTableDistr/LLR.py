@@ -12,6 +12,7 @@ from ryu.lib.packet import ipv4
 from ryu.lib.packet import ether_types
 from ryu.lib import mac, ip
 from ryu.topology import event
+from ryu.lib.packet import udp
 from collections import defaultdict
 
 
@@ -115,13 +116,13 @@ class ProjectController(app_manager.RyuApp):
         self.cnt = 0
         self.path = defaultdict(list)
 
-        x = 18  # 学号后两位
-        mod = lambda x: x % 16 if x % 16 != 0 else 16
-        src = '10.0.0.%d' % mod(x)
-        dst1 = '10.0.0.%d' % mod(x + 4)
-        dst2 = '10.0.0.%d' % mod(x + 5)
+        # x = 18  # 学号后两位
+        # mod = lambda x: x % 16 if x % 16 != 0 else 16
+        # src = '10.0.0.%d' % mod(x)
+        # dst1 = '10.0.0.%d' % mod(x + 4)
+        # dst2 = '10.0.0.%d' % mod(x + 5)
 
-        self.key = [(src, dst1), (src, dst2)]
+        # self.key = [(src, dst1), (src, dst2)]
 
     def add_flow(self, datapath, priority, match, actions, buffer_id=None):
         ofproto = datapath.ofproto
@@ -138,52 +139,82 @@ class ProjectController(app_manager.RyuApp):
                                     match=match, instructions=inst)
         datapath.send_msg(mod)
 
-    def cal_cost(self, dpid: int, ip: str):
-        if self.hosts[ip][0] == dpid:
-            return 0
-        ans = 0
-        while self.hosts[ip][0] != dpid:
-            son = self.ip_son[dpid][ip]
-            ans = max(ans, self.costs[(dpid, son)])
-            dpid = son
-        return ans
+    def cal_cost(self, path):
+        max_load = 0
+        for i in range(len(path) - 1):
+            link = (path[i], path[i + 1])
+            load = self.costs.get(link, 0)
+            if load > max_load:
+                max_load = load
+        return max_load
 
-    def cal_path(self, src, dst):
+    def cal_path(self, src, dst, src_port, dst_port):
         dpid1 = self.hosts[src][0]
         dpid2 = self.hosts[dst][0]
+
+        key = (src, dst, src_port, dst_port)
 
         def max_link(dpid: int, ip1: str, ip2: str):
             return max(self.cal_cost(dpid, ip1), self.cal_cost(dpid, ip2))
         
-        if dpid1 == dpid2:
-            self.path[(src, dst)] = [dpid1]
-        elif self.father[dpid1] == self.father[dpid2]:
-            fa = self.father[dpid1]
-            # 负载相同时选择左边的路径(fa[0])
-            chosen_father = fa[0] if max_link(fa[0], src, dst) <= max_link(fa[1], src, dst) else fa[1]
-            self.path[(src, dst)] = [dpid1, chosen_father, dpid2]
-        else:
-            mindpid = min(range(17, 21), key=lambda i: max_link(i, src, dst))
-            self.path[(src, dst)] = [
-                dpid1,
-                self.ip_son[mindpid][src],
-                mindpid,
-                self.ip_son[mindpid][dst],
-                dpid2,
-            ]
+        # 定义用于存储可能的路径及其最大链路负载的列表
+        possible_paths = []
 
-        now_path = self.path[(src, dst)]
-        for i in range(len(now_path) - 1):
-            self.costs[(now_path[i], now_path[i + 1])] += 1
-            self.costs[(now_path[i + 1], now_path[i])] += 1
+        # 如果两个主机连接在同一个交换机上
+        if dpid1 == dpid2:
+            path = [dpid1]
+            max_load = self.cal_cost(path)
+            possible_paths.append((max_load, path))
+        else:
+            # 获取所有可能的上行和下行端口组合
+            uplinks = self.father[dpid1]
+            downlinks = self.father[dpid2]
+
+            # 获取所有可能的核心交换机
+            core_switches = range(17, 21)
+
+            # 遍历所有可能的路径，计算其最大链路负载
+            for up in uplinks:
+                for down in downlinks:
+                    if up == down:
+                        # 两个接入交换机连接到同一个汇聚交换机
+                        path = [dpid1, up, dpid2]
+                    else:
+                        for core in core_switches:
+                            path = [dpid1, up, core, down, dpid2]
+                            max_load = self.cal_cost(path)
+                            possible_paths.append((max_load, path))
+
+        # 选择最大链路负载最小的路径
+        if possible_paths:
+            # 排序：首先按最大链路负载升序，其次按路径字典序升序（实现 LPR 原则）
+            possible_paths.sort(key=lambda x: (x[0], x[1]))
+            best_path = possible_paths[0][1]
+        else:
+            # 默认路径
+            best_path = [dpid1, dpid2]
+
+        # 更新链路负载信息
+        for i in range(len(best_path) - 1):
+            link = (best_path[i], best_path[i + 1])
+            self.costs[link] += 1
+            # 如果链路是双向的，可以同时更新反向链路
+            reverse_link = (best_path[i + 1], best_path[i])
+            self.costs[reverse_link] += 1
+
+        # 存储计算得到的路径
+        self.path[key] = best_path
+
+        # 打印路径信息（可选）
         if self.cnt < 10:
-            self.print_path((src, dst))
+            self.print_path(key)
             self.cnt += 1
 
-    def get_nxt(self, dpid, src, dst):
-        if (src, dst) not in self.path:
-            self.cal_path(src, dst)
-        now_path = self.path[(src, dst)]
+    def get_nxt(self, dpid, src, dst, src_port, dst_port):
+        key = (src, dst, src_port, dst_port)
+        if key not in self.path:
+            self.cal_path(src, dst, src_port, dst_port)
+        now_path = self.path[key]
         for i in range(len(now_path)):
             if now_path[i] == dpid:
                 if i == len(now_path) - 1:
@@ -221,22 +252,41 @@ class ProjectController(app_manager.RyuApp):
         pkt = packet.Packet(msg.data)
         eth = pkt.get_protocol(ethernet.ethernet)
         in_port = msg.match["in_port"]
+
+        # 忽略LLDP包
         if eth.ethertype == ether_types.ETH_TYPE_LLDP:
             return
+        
         src = None
         dst = None
+        src_port = None
+        dst_port = None
         dpid = datapath.id
         match = None
         parser = datapath.ofproto_parser
+
+        # 根据以太网类型处理IP包和ARP包
         if eth.ethertype == ether_types.ETH_TYPE_IP:
             _ipv4 = pkt.get_protocol(ipv4.ipv4)
             src = _ipv4.src
             dst = _ipv4.dst
+
+            if _ipv4.proto != ip.IPPROTO_UDP:
+                print("Not UDP packet")
+                return
+            
+            _udp = pkt.get_protocol(udp.udp)
+            src_port = _udp.src_port
+            dst_port = _udp.dst_port
+
             match = parser.OFPMatch(
                 eth_type=ether_types.ETH_TYPE_IP,
                 in_port=in_port,
                 ipv4_src=src,
                 ipv4_dst=dst,
+                ip_proto=ip.IPPROTO_UDP,
+                udp_src=_udp.src_port,
+                udp_dst=_udp.dst_port,
             )
         elif eth.ethertype == ether_types.ETH_TYPE_ARP:
             arp_pkt = pkt.get_protocol(arp.arp)
@@ -249,14 +299,22 @@ class ProjectController(app_manager.RyuApp):
                 arp_tpa=dst,
             )
         else:
+            # 非IP或ARP包，直接返回
             return
-        out_port = self.get_nxt(dpid, src, dst)
-        actions = [datapath.ofproto_parser.OFPActionOutput(out_port)]
+        
+        # 计算从当前交换机到目标主机的下一跳端口
+        out_port = self.get_nxt(dpid, src, dst, src_port, dst_port)
+        actions = [parser.OFPActionOutput(out_port)]
 
+        # 安装流表项，避免后续相同的包再次触发packet_in
         if out_port != ofproto.OFPP_FLOOD:
             self.add_flow(datapath, 1, match, actions)
+
+        actions = [parser.OFPActionOutput(ofproto.OFPP_TABLE)]
+
+        # 发送首包到指定端口
         data = None
-        if msg.buffer_id == ofproto.OFP_NO_BUFFER:
+        if msg.buffer_id == ofproto.OFP_NO_BUFFER:  # 还得把包送往该去的端口
             data = msg.data
         out = datapath.ofproto_parser.OFPPacketOut(
             datapath=datapath,

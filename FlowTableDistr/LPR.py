@@ -195,13 +195,16 @@ class ProjectController(app_manager.RyuApp):
         pkt = packet.Packet(msg.data)
         eth = pkt.get_protocol(ethernet.ethernet)
         in_port = msg.match["in_port"]
+
         if eth.ethertype == ether_types.ETH_TYPE_LLDP:
             return
+
         src = None
         dst = None
         dpid = datapath.id
         match = None
         parser = datapath.ofproto_parser
+
         if eth.ethertype == ether_types.ETH_TYPE_IP:
             _ipv4 = pkt.get_protocol(ipv4.ipv4)
             src = _ipv4.src
@@ -224,15 +227,23 @@ class ProjectController(app_manager.RyuApp):
             )
         else:
             return
-        out_port = self.get_nxt(dpid, src, dst)
-        actions = [datapath.ofproto_parser.OFPActionOutput(out_port)]
 
+        # 计算下一跳端口
+        out_port = self.get_nxt(dpid, src, dst)
+
+        # 下发流表项
+        actions = [parser.OFPActionOutput(out_port)]
         if out_port != ofproto.OFPP_FLOOD:
             self.add_flow(datapath, 1, match, actions)
+
+        # 构造 PacketOut，将首包送回流表匹配
+        actions = [parser.OFPActionOutput(ofproto.OFPP_TABLE)]
+
         data = None
         if msg.buffer_id == ofproto.OFP_NO_BUFFER:
             data = msg.data
-        out = datapath.ofproto_parser.OFPPacketOut(
+
+        out = parser.OFPPacketOut(
             datapath=datapath,
             buffer_id=msg.buffer_id,
             in_port=in_port,
