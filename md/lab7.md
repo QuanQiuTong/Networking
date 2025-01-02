@@ -45,13 +45,12 @@ match = parser.OFPMatch(
 )
 
 # 动作
-out_port = self.get_nxt(dpid, src, dst)
-actions = [datapath.ofproto_parser.OFPActionOutput(out_port)]
+actions = [parser.OFPActionOutput(ofproto.OFPP_TABLE)]
 ```
 
 ### 3. 端口确定
 
-通过`get_nxt(self, dpid, src, dst)`函数确定下一跳端口。
+通过`get_nxt()`函数确定下一跳端口。
 
 如果请求的路径没有计算过，就以cal_path计算之。
 
@@ -60,6 +59,8 @@ actions = [datapath.ofproto_parser.OFPActionOutput(out_port)]
 否则直接输出到达目的主机的端口号。
 
 若发生KeyError，则当前节点不是目的节点的父节点，需要后续处理。
+
+需要端口号来区分的时候也类似，只不过key元组的元素更多。
 
 ```python
 def get_nxt(self, dpid, src, dst):
@@ -159,34 +160,23 @@ p.s. 由于本实验中只查找 x 到(x+4)和(x+5)的路径，所以必然经�
 
 ## Least Loaded Routing (LLR)
 
+关键在于计算路径的负载并选择最小的路径。
 ```python
-def cal_path(self, src, dst):
-    dpid1 = self.hosts[src][0]
-    dpid2 = self.hosts[dst][0]
+    for up in uplinks:
+        for down in downlinks:
+            if up == down:
+                # 两个接入交换机连接到同一个汇聚交换机
+                path = [dpid1, up, dpid2]
+            else:
+                for core in core_switches:
+                    path = [dpid1, up, core, down, dpid2]
+                    max_load = self.cal_cost(path)
+                    possible_paths.append((max_load, path))
 
-    def max_link(dpid: int, ip1: str, ip2: str):
-        return max(self.cal_cost(dpid, ip1), self.cal_cost(dpid, ip2))
+    ...
 
-    if dpid1 == dpid2:
-        self.path[(src, dst)] = [dpid1]
-    elif self.father[dpid1] == self.father[dpid2]:
-        fa = self.father[dpid1]
-        mid = fa[0] if max_link(fa[0], src, dst) <= max_link(fa[1], src, dst) else fa[1]
-        self.path[(src, dst)] = [dpid1, mid, dpid2]
-    else:
-        mindpid = min(range(17, 21), key=lambda i: max_link(i, src, dst))
-        self.path[(src, dst)] = [
-            dpid1,
-            self.ip_son[mindpid][src],
-            mindpid,
-            self.ip_son[mindpid][dst],
-            dpid2,
-        ]
-
-    path = self.path[(src, dst)]
-    for i in range(len(path) - 1):
-        self.costs[(path[i], path[i + 1])] += 1
-        self.costs[(path[i + 1], path[i])] += 1
+    possible_paths.sort(key=lambda x: (x[0], x[1]))
+    best_path = possible_paths[0][1]
 ```
 
 ### 分析
@@ -197,22 +187,20 @@ def cal_path(self, src, dst):
 
 最后，更新路径的负载。
 
-`≤`和`min()`保证了负载相同时，选择编号较小的交换机，以符合LPR原则。
+负载相同时，选择编号较小的交换机，以符合LPR原则。
 
 ### 结果
 
-测了两次。
-![alt text](image-33.png)
+![alt text](image-41.png)
 
     h1 -> s1 -> s9 -> s17 -> s11 -> s3 -> h5
-    h5 -> s3 -> s12 -> s19 -> s10 -> s1 -> h1
+    h1 -> s1 -> s10 -> s19 -> s12 -> s3 -> h5
+    h1 -> s1 -> s9 -> s17 -> s11 -> s3 -> h5
+    h1 -> s1 -> s10 -> s19 -> s12 -> s3 -> h5
     h1 -> s1 -> s9 -> s17 -> s11 -> s3 -> h6
-    h6 -> s3 -> s12 -> s19 -> s10 -> s1 -> h1
+    h1 -> s1 -> s10 -> s19 -> s12 -> s3 -> h6
+    h1 -> s1 -> s9 -> s17 -> s11 -> s3 -> h6
+    h1 -> s1 -> s10 -> s19 -> s12 -> s3 -> h6
     h2 -> s1 -> s9 -> s17 -> s11 -> s3 -> h6
-    h6 -> s3 -> s12 -> s19 -> s10 -> s1 -> h2
-    h2 -> s1 -> s9 -> s17 -> s11 -> s4 -> h7
-    h7 -> s4 -> s12 -> s19 -> s10 -> s1 -> h2
-    h3 -> s2 -> s9 -> s18 -> s11 -> s4 -> h7
-    h7 -> s4 -> s12 -> s20 -> s10 -> s2 -> h3
+    h2 -> s1 -> s10 -> s19 -> s12 -> s3 -> h6
 
-![alt text](image-34.png)
